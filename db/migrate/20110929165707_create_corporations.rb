@@ -18,7 +18,6 @@ class CreateCorporations < ActiveRecord::Migration
 		t.boolean		:or_finished, :default=>false
       	t.timestamps
     end
-    	add_index		:corporations, :player_id
   end
 
   def self.down

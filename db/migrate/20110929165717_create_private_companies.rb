@@ -9,7 +9,7 @@ class CreatePrivateCompanies < ActiveRecord::Migration
 		t.integer 		:starting_bid
 		t.string		:status, :null => false, :default => "UNBOUGHT"
 		t.boolean		:or_finished, :default=>false
-		t.boolean		:sell_to_corp
+		t.boolean		:sell_to_corp, :default => true
       	t.timestamps
     end
     	add_index :private_companies, [:priv_co_owner_id, :priv_co_owner_type], :name=>"priv_co_indx"

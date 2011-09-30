@@ -4,7 +4,6 @@ class Corporation < ActiveRecord::Base
 	belongs_to :player
 	#has_many :ships
 	#has_many :shares
-	has_many :independent_companies, :as => :ind_co_owner
 	has_many :private_companies, :as => :priv_co_owner
 	#has_many :pilots
 	#has_many :mines, :as => :claim

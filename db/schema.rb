@@ -43,7 +43,19 @@ ActiveRecord::Schema.define(:version => 20110929190407) do
     t.datetime "updated_at"
   end
 
-  add_index "corporations", ["player_id"], :name => "index_corporations_on_player_id"
+  create_table "customers", :force => true do |t|
+    t.string   "name",               :limit => 30,                     :null => false
+    t.string   "username",           :limit => 30,                     :null => false
+    t.string   "email",              :limit => 120,                    :null => false
+    t.string   "motto"
+    t.string   "salt"
+    t.string   "encrypted_password"
+    t.boolean  "admin",                             :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "customers", ["username"], :name => "index_customers_on_username", :unique => true
 
   create_table "games", :force => true do |t|
     t.string   "game_code",         :limit => 6,                    :null => false
@@ -62,42 +74,34 @@ ActiveRecord::Schema.define(:version => 20110929190407) do
   add_index "games", ["game_code"], :name => "index_games_on_game_code"
 
   create_table "independent_companies", :force => true do |t|
-    t.integer  "ind_co_owner_id"
-    t.string   "ind_co_owner_type"
-    t.string   "name",              :limit => 50,                         :null => false
+    t.integer  "player_id"
+    t.string   "name",         :limit => 50,                         :null => false
     t.string   "tag_line"
-    t.integer  "starting_bid",                    :default => 100
     t.integer  "bonus_amount"
-    t.string   "bonus_type",        :limit => 4
-    t.integer  "max_ships",                       :default => 0
-    t.integer  "max_claims",                      :default => 0
+    t.string   "bonus_type",   :limit => 4
+    t.integer  "max_ships",                  :default => 2
+    t.integer  "max_claims",                 :default => 2
     t.integer  "number"
-    t.integer  "treasury",                        :default => 100
-    t.string   "status",                          :default => "UNBOUGHT", :null => false
-    t.integer  "income",                          :default => 0
-    t.boolean  "or_finished",                     :default => false
+    t.integer  "treasury",                   :default => 100
+    t.string   "status",                     :default => "UNBOUGHT", :null => false
+    t.integer  "income",                     :default => 0
+    t.boolean  "or_finished",                :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "independent_companies", ["ind_co_owner_id", "ind_co_owner_type"], :name => "ind_co_indx"
-
   create_table "players", :force => true do |t|
     t.integer  "game_id"
-    t.string   "name",          :limit => 30,                     :null => false
-    t.string   "username",      :limit => 30,                     :null => false
-    t.integer  "cash_held",                    :default => 0,     :null => false
-    t.string   "email",         :limit => 120,                    :null => false
-    t.boolean  "activated",                    :default => false
-    t.string   "motto"
-    t.string   "password",      :limit => 30,                     :null => false
-    t.boolean  "admin",                        :default => false
-    t.boolean  "previous_pass",                :default => false
+    t.integer  "customer_id"
+    t.integer  "cash_held",     :default => 0,     :null => false
+    t.boolean  "activated",     :default => false
+    t.boolean  "previous_pass", :default => false
     t.integer  "player_number"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "players", ["customer_id"], :name => "index_players_on_customer_id"
   add_index "players", ["game_id"], :name => "index_players_on_game_id"
 
   create_table "private_companies", :force => true do |t|
@@ -110,7 +114,7 @@ ActiveRecord::Schema.define(:version => 20110929190407) do
     t.integer  "starting_bid"
     t.string   "status",                           :default => "UNBOUGHT", :null => false
     t.boolean  "or_finished",                      :default => false
-    t.boolean  "sell_to_corp"
+    t.boolean  "sell_to_corp",                     :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
