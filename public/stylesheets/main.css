@@ -36,14 +36,53 @@ body {
 	float:right;
 	height: 500px;
 	width: 367px;
-	background-color:  #a7a7a7;
+	background-color:  #334c84;
 	color: black;
-	font-family:  arial black, Verdana, sans-serif;
+	font-family:  arial, sans-serif;
 	font-size:  18px;
 	border-left-width: 3px;
 	border-left-color: black;
 	border-left-style: solid;
 }
+
+.login_box {
+	margin: 44px 26px;
+	width: 300px;
+	height: 400px;
+	background-color: #a7a7a7;
+	border:3px solid black;
+	-mox-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	-moz-box-shadow: 3px 3px 3px black;
+	-webkit-box-shadow: 3px 3px 3px black;
+	box-shadow: 3px 3px 3px black;
+	padding: 6px;
+}
+
+.player_wait {
+	line-height: 40px;
+	font-weight: bold;
+	font-family: lucida sans unicode, tahoma, courier new, monospace;
+	vertical-align: middle;
+	text-align: left;
+	padding-left: 15px;
+	font-size: 16px;
+	color: black;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #wrapper_outer {
 	width: 960px;
@@ -395,7 +434,7 @@ body {
 #error_expalanation h3 {
 	color: #fff;
 	background-color: #c00;
-	font-size: 16px;
+	font-size: 16px;s
 	font-weight: bold;
 	padding: 6px;
 }
@@ -415,4 +454,12 @@ body {
 .sign_in_table {
 	padding: 2px;
 	border: none;
+}
+
+.params_debug {
+	position: absolute;
+	top: 90%;
+	float: left;
+	font-family: Courier New, monospace;
+	font-size: 10px;
 }

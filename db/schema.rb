@@ -74,18 +74,19 @@ ActiveRecord::Schema.define(:version => 20110929190407) do
   add_index "games", ["game_code"], :name => "index_games_on_game_code"
 
   create_table "independent_companies", :force => true do |t|
-    t.integer  "player_id"
-    t.string   "name",         :limit => 50,                         :null => false
+    t.integer  "ind_co_owner_id"
+    t.string   "ind_co_owner_type"
+    t.string   "name",              :limit => 50,                         :null => false
     t.string   "tag_line"
     t.integer  "bonus_amount"
-    t.string   "bonus_type",   :limit => 4
-    t.integer  "max_ships",                  :default => 2
-    t.integer  "max_claims",                 :default => 2
+    t.string   "bonus_type",        :limit => 4
+    t.integer  "max_ships",                       :default => 2
+    t.integer  "max_claims",                      :default => 2
     t.integer  "number"
-    t.integer  "treasury",                   :default => 100
-    t.string   "status",                     :default => "UNBOUGHT", :null => false
-    t.integer  "income",                     :default => 0
-    t.boolean  "or_finished",                :default => false
+    t.integer  "treasury",                        :default => 100
+    t.string   "status",                          :default => "UNBOUGHT", :null => false
+    t.integer  "income",                          :default => 0
+    t.boolean  "or_finished",                     :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

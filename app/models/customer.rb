@@ -14,6 +14,7 @@ class Customer < ActiveRecord::Base
 				:confirmation => true
 
 	has_many :players
+	has_many :games, :through => :players
 	
 	before_save :encrypt_password
 	
@@ -26,6 +27,11 @@ class Customer < ActiveRecord::Base
 		customer = find_by_username(username)
 		return nil		if customer.nil?
 		return customer	if customer.has_password?(submitted_password)
+	end
+	
+	def self.authenticate_with_salt(id, cookie_salt)
+		customer = find_by_id(id)
+		(customer && customer.salt == cookie_salt) ? customer : nil
 	end
 	
 	private

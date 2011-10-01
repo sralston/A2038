@@ -1,0 +1,31 @@
+<div class="wrapper">
+
+	<div class="login_graphic">
+		<%= image_tag "2038_box_cover.jpg" %>
+	</div>
+	
+	<div class="login_area">
+		
+		<div class="login_box">
+			<br />
+			<span style="text-align: center; font-weight: bold;">
+				Waiting for more players...
+			</span>
+		
+			<br />
+			<br />
+			<hr />		
+			<br />
+
+			<% @players.each do |player| %>
+			
+				<%= render player %>
+			
+			<% end %>
+			<br />
+			<hr />
+			<br />
+			<span style="font-weight: bold;">Link to the rules while waiting...</span>
+		</div>
+	</div>
+</div>

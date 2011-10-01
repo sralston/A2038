@@ -1,0 +1,31 @@
+    login_index GET    /login/index(.:format)        {:controller=>"login", :action=>"index"}
+  login_waiting GET    /login/waiting(.:format)      {:controller=>"login", :action=>"waiting"}
+login_logged_in GET    /login/logged_in(.:format)    {:controller=>"login", :action=>"logged_in"}
+     game_start GET    /game/start(.:format)         {:controller=>"game", :action=>"start"}
+       sessions POST   /sessions(.:format)           {:action=>"create", :controller=>"sessions"}
+        session DELETE /sessions/:id(.:format)       {:action=>"destroy", :controller=>"sessions"}
+         signup        /signup(.:format)             {:controller=>"customers", :action=>"new"}
+         signin        /signin(.:format)             {:controller=>"sessions", :action=>"new"}
+        signout        /signout(.:format)            {:controller=>"sessions", :action=>"destroy"}
+      customers GET    /customers(.:format)          {:action=>"index", :controller=>"customers"}
+                POST   /customers(.:format)          {:action=>"create", :controller=>"customers"}
+   new_customer GET    /customers/new(.:format)      {:action=>"new", :controller=>"customers"}
+  edit_customer GET    /customers/:id/edit(.:format) {:action=>"edit", :controller=>"customers"}
+       customer GET    /customers/:id(.:format)      {:action=>"show", :controller=>"customers"}
+                PUT    /customers/:id(.:format)      {:action=>"update", :controller=>"customers"}
+                DELETE /customers/:id(.:format)      {:action=>"destroy", :controller=>"customers"}
+        players GET    /players(.:format)            {:action=>"index", :controller=>"players"}
+                POST   /players(.:format)            {:action=>"create", :controller=>"players"}
+     new_player GET    /players/new(.:format)        {:action=>"new", :controller=>"players"}
+    edit_player GET    /players/:id/edit(.:format)   {:action=>"edit", :controller=>"players"}
+         player GET    /players/:id(.:format)        {:action=>"show", :controller=>"players"}
+                PUT    /players/:id(.:format)        {:action=>"update", :controller=>"players"}
+                DELETE /players/:id(.:format)        {:action=>"destroy", :controller=>"players"}
+          games GET    /games(.:format)              {:action=>"index", :controller=>"games"}
+                POST   /games(.:format)              {:action=>"create", :controller=>"games"}
+       new_game GET    /games/new(.:format)          {:action=>"new", :controller=>"games"}
+      edit_game GET    /games/:id/edit(.:format)     {:action=>"edit", :controller=>"games"}
+           game GET    /games/:id(.:format)          {:action=>"show", :controller=>"games"}
+                PUT    /games/:id(.:format)          {:action=>"update", :controller=>"games"}
+                DELETE /games/:id(.:format)          {:action=>"destroy", :controller=>"games"}
+           root        /(.:format)                   {:controller=>"login", :action=>"index"}

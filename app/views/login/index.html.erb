@@ -5,14 +5,49 @@
 	</div>
 	
 	<div class="login_area">
-		<span style="text-align: center;">
-			Welcome!  Please log in.
-		</span>
-		<br />
-		<span style="text-align: left; margin-left: 20px;">
-			Username:<br />
-			Password:<br />
-		</span>
-	</div>
+		
+		<div class="login_box">
+			<br />
+			<span style="text-align: center; font-weight: bold;">
+				Welcome! 
+				<br/>Please log in
+			</span>
+		
+			<br />
+			<br />
+			<hr />		
+			<br />
 
+			<%= form_for(:session, :url=> sessions_path) do |f| %>
+		
+			<table style="text-align: right; padding: 3px; line-height: 35px;">
+				<tr>
+					<td>Username:</td>
+					<td>&nbsp&nbsp<%= f.text_field :username, :size=>15 %></td>
+				</tr>
+
+				<tr>
+					<td>Password:</td>
+					<td>&nbsp&nbsp<%= f.password_field :password, :size=>15 %></td>
+				</tr>
+				
+				<tr>
+					<td>Gamecode:</td>
+					<td>&nbsp&nbsp<%= f.text_field :gamecode, :size=>15 %></td>
+				</tr>
+				
+			</table>
+
+			<br />
+			
+			<span style="text-align: center;">
+			<%= f.submit "Log in" %>
+			</span>
+						
+			<% end %>			
+		
+			<br />
+			<hr />
+		</div>
+	</div>
 </div>

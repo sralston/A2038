@@ -1,7 +1,7 @@
 class CreateIndependentCompanies < ActiveRecord::Migration
   def self.up
     create_table :independent_companies do |t|
-		t.references	:player, :null=>true
+		t.references	:ind_co_owner, :polymorphic => true, :null=>true
 		t.string		:name, :null=>false, :limit=>50
 		t.string		:tag_line, :limit=>255, :null=>true
 		t.integer		:bonus_amount, :null=>true

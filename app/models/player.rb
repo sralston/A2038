@@ -3,7 +3,7 @@ class Player < ActiveRecord::Base
 	
 	belongs_to :game
 	belongs_to :customer
-	has_many :independent_companies
+	has_many :independent_companies, :as => :ind_co_owner
 	has_many :corporations
 	has_many :private_companies, :as => :priv_co_owner
 	has_many :bids
@@ -11,4 +11,9 @@ class Player < ActiveRecord::Base
 	has_one	 :current_player, :class_name => :game, :foreign_key => "current_player_id"
 	
 	#has_many :shares
+	
+	def self.authenticate_with_salt(id, cookie_salt)
+		player = find_by_id(id)
+		(player.customer && player.customer.salt == cookie_salt) ? player : nil
+	end
 end

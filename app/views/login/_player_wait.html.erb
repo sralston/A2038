@@ -1,0 +1,15 @@
+<div class="player_wait">
+
+	<% if player_wait.activated? %>
+	<div class="player_wait_number_activated">
+	<% else %>
+	<div class="player_wait_number_unactive">
+	<% end %>
+		player_wait.player_number
+	</div>
+	
+	<div class="player_wait_name">
+		player_wait.customer.username
+	</div>
+
+</div>
