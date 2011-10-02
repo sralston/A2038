@@ -6,6 +6,7 @@ class LoginController < ApplicationController
 	
 	def waiting
 		@players = this_player.game.players.order("player_number ASC")
+		@last_event_num = this_player.game.events.where(:code => "LOGIN_PLAYER").last.id
 		@title = "Waiting for other player(s)..."
 	end
 	
@@ -19,9 +20,29 @@ class LoginController < ApplicationController
 									
 		#all activated? && game.current_state == "NEW" -> game#start
 		if (@game.players.where(:activated => false).count == 0) && (@player.game.current_state == "NEW")
+			Event.all_in(@player)
 			redirect_to game_start_path
 		else
 			redirect_to login_waiting_path
 		end			
+	end
+	
+	def update
+		@last_event_num = params[:login][:last_event_num]
+		if (this_player.game.players.where(:activated => false).count == 0) && (this_player.game.current_state == "NEW")
+		# all players are in, redirect to game_start_path
+			#send event to waiting to say everyone in
+	 		render :js => "$.redirect('" + game_start_url + "');" 
+		else
+			@events = this_player.game.events.where("id > ?",@last_event_num).where("code LIKE ?","LOG%")
+			
+			if (@events.count == 0)
+				render :js => "$.no_updates();"
+			else
+				respond_to do |format|
+  				format.js
+  				end
+  			end
+  		end
 	end
 end

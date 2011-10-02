@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110929190407) do
+ActiveRecord::Schema.define(:version => 20111001132213) do
 
   create_table "bids", :force => true do |t|
     t.integer  "player_id"
@@ -56,6 +56,16 @@ ActiveRecord::Schema.define(:version => 20110929190407) do
   end
 
   add_index "customers", ["username"], :name => "index_customers_on_username", :unique => true
+
+  create_table "events", :force => true do |t|
+    t.integer  "game_id"
+    t.string   "code",       :limit => 100,                :null => false
+    t.string   "text"
+    t.integer  "value",                     :default => 0
+    t.string   "regarding",  :limit => 50
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "games", :force => true do |t|
     t.string   "game_code",         :limit => 6,                    :null => false
@@ -121,5 +131,16 @@ ActiveRecord::Schema.define(:version => 20110929190407) do
   end
 
   add_index "private_companies", ["priv_co_owner_id", "priv_co_owner_type"], :name => "priv_co_indx"
+
+  create_table "shares", :force => true do |t|
+    t.integer  "corporation_id"
+    t.integer  "stock_owner_id"
+    t.string   "stock_owner_type"
+    t.string   "type",                                                        :default => "10% Share", :null => false
+    t.string   "status",           :limit => 6,                                                        :null => false
+    t.decimal  "percent",                       :precision => 2, :scale => 1, :default => 0.1
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

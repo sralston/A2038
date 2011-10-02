@@ -1,3 +1,23 @@
+<script language=javascript>
+	//var interval = self.setInterval("request_update(lastEventNum)", 3000);
+	
+	jQuery.inputHighlight = function(color) {
+		$(".login_inputs").each(function() {
+			$(this).focus(function() {
+				$(this).css({"background" : color});
+			});
+			$(this).blur(function() {
+				$(this).css({"background" : "white"});
+			});
+		});
+	}
+	
+	$(document).ready(function() {
+		$.inputHighlight("#a6cdec");
+	});
+	
+</script>
+
 <div class="wrapper">
 
 	<div class="login_graphic">
@@ -23,17 +43,17 @@
 			<table style="text-align: right; padding: 3px; line-height: 35px;">
 				<tr>
 					<td>Username:</td>
-					<td>&nbsp&nbsp<%= f.text_field :username, :size=>15 %></td>
+					<td>&nbsp&nbsp<%= f.text_field :username, :size=>15, :class=>"login_inputs" %></td>
 				</tr>
 
 				<tr>
 					<td>Password:</td>
-					<td>&nbsp&nbsp<%= f.password_field :password, :size=>15 %></td>
+					<td>&nbsp&nbsp<%= f.password_field :password, :size=>15, :class=>"login_inputs" %></td>
 				</tr>
 				
 				<tr>
 					<td>Gamecode:</td>
-					<td>&nbsp&nbsp<%= f.text_field :gamecode, :size=>15 %></td>
+					<td>&nbsp&nbsp<%= f.text_field :gamecode, :size=>15, :class=>"login_inputs" %></td>
 				</tr>
 				
 			</table>

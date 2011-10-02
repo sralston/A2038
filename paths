@@ -1,6 +1,7 @@
     login_index GET    /login/index(.:format)        {:controller=>"login", :action=>"index"}
   login_waiting GET    /login/waiting(.:format)      {:controller=>"login", :action=>"waiting"}
 login_logged_in GET    /login/logged_in(.:format)    {:controller=>"login", :action=>"logged_in"}
+   login_update GET    /login/update(.:format)       {:controller=>"login", :action=>"update"}
      game_start GET    /game/start(.:format)         {:controller=>"game", :action=>"start"}
        sessions POST   /sessions(.:format)           {:action=>"create", :controller=>"sessions"}
         session DELETE /sessions/:id(.:format)       {:action=>"destroy", :controller=>"sessions"}

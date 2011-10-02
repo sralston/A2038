@@ -1,0 +1,5 @@
+<% @events.each do |e| %>
+
+	$.<%= e.code == "LOGIN_PLAYER" ? "login" : "logout" %>(<%= e.value %>, "<%= e.text %>", <%= e.id %>);
+	
+<% end %>

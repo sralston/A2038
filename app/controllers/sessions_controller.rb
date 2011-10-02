@@ -28,6 +28,8 @@ class SessionsController < ApplicationController
 	end
 	
 	def destroy
-	
+		@player = Player.find(params[:id])
+		sign_out @player
+		redirect_to :root
 	end
 end

@@ -1,13 +1,4 @@
-
-	<div class="player_wait">
-	
-	<% if player.activated? %>
-		<span style="color: green;">
-	<% else %>
-		<span style="color: red;">
-	<% end %>
-		[<%= player.player_number %>]
-		</span>
-		<%= player.customer.username %>
-	</div>
-
+<div class="player_wait">
+	<span id='player_<%= player.player_number %>' style='color: <%= raw player.activated? ? "green;'>[Active!]" : "red;'>[Waiting]" %></span>
+<%= player.customer.username %>
+</div>

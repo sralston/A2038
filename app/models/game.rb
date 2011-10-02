@@ -7,8 +7,7 @@ class Game < ActiveRecord::Base
 	has_many	:customers, :through => :players
 	has_many	:private_companies, :as => :priv_co_owner
 	has_many	:independent_companies, :as => :ind_co_owner
-	
-	#has_many	:event_logs
+	has_many	:events
 	#has_many	:locations
-	#has_many 	:shares
+	has_many 	:shares, :as => :stock_owner
 end

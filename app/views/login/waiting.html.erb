@@ -1,3 +1,60 @@
+<script language=javascript>
+	var lastEventNum = <%= @last_event_num %>;
+	var interval;
+	var ping_time = 6000; 
+	
+	//var interval = self.setInterval("request_update(lastEventNum)", 3000);
+	
+	//jQuery.first1 = function(message) {
+	//	alert(message);
+	//}
+
+	
+	jQuery.request_login_update = function() {
+		interval = setInterval(function() {
+			$("#login_last_event_num").val(lastEventNum);
+			$("#remote_update_form").submit();
+		}, ping_time);
+	}
+	
+	jQuery.no_updates = function() {
+		$("#login_event_text").fadeOut('slow', function() { 
+			$("#login_event_text").html("No updates...").fadeIn('slow', function() { });
+		});
+	}
+	
+	jQuery.login = function(player_num, te, last_event_id) {
+		lastEventNum = last_event_id;
+		$("#player_"+player_num).html("[Active!]").css("color","green");
+		$("#login_event_text").fadeOut('slow', function() {
+			$("#login_event_text").html(te).fadeIn('slow', function() { });
+		});	
+
+	}
+	
+	jQuery.logout = function(player_num, te, last_event_id) {
+		lastEventNum = last_event_id;		
+		$("#player_"+player_num).html("[Waiting]").css("color","red");
+		$("#login_event_text").fadeOut('slow', function () {
+			$("#login_event_text").html(te).fadeIn('slow', function() { });
+		});
+	}
+	
+	jQuery.redirect = function(new_addr) {
+		window.location = new_addr;
+	}
+	
+	$(document).ready(function() {
+		$.request_login_update()
+	});
+	
+</script>
+
+<button onclick="interval=window.clearInterval(interval)">stop</button>
+<button onclick="$.request_login_update()">start</button>
+<button onclick="window.location='http://www.zerohedge.com';">location!</button>
+<%= button_to "Logout", session_path(this_player), :method=>:delete %>
+
 <div class="wrapper">
 
 	<div class="login_graphic">
@@ -8,7 +65,7 @@
 		
 		<div class="login_box">
 			<br />
-			<span style="text-align: center; font-weight: bold;">
+			<span style="font-weight: bold;">
 				Waiting for more players...
 			</span>
 		
@@ -16,16 +73,30 @@
 			<br />
 			<hr />		
 			<br />
-
 			<% @players.each do |player| %>
-			
 				<%= render player %>
-			
 			<% end %>
 			<br />
 			<hr />
 			<br />
-			<span style="font-weight: bold;">Link to the rules while waiting...</span>
+			Link to the rules while waiting...
+			<br />
+			<br />
+			<hr />
+			<br />
+			<div id="login_event_text">
+			# event_text here with fancy fade stuff
+			</div>
 		</div>
 	</div>
 </div>
+
+
+<br />
+
+<div id="ohmy">bitchz!</div>
+
+<%= form_for :login, :url => { :controller=>:login, :action=>:update }, :html => {:method=>:get, :id => "remote_update_form"} , :remote=>true do |f| %>
+ <%= f.hidden_field :last_event_num, :value => "0" %>
+ <%= f.submit "try the form!" %>
+<% end %>

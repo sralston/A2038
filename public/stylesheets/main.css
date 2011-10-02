@@ -61,19 +61,23 @@ body {
 }
 
 .player_wait {
-	line-height: 40px;
-	font-weight: bold;
-	font-family: lucida sans unicode, tahoma, courier new, monospace;
+	line-height: 25px;
+	font-family: courier new, monospace;
 	vertical-align: middle;
 	text-align: left;
 	padding-left: 15px;
-	font-size: 16px;
+	font-size: 14px;
 	color: black;
+	font-weight: normal;
 }
 
-
-
-
+.login_event_text {
+	font-family: arial, sans-serif;
+	color: black;
+	font-size: 18px;
+	text-align: center;
+	padding: 6px;
+}
 
 
 

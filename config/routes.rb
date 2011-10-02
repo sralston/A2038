@@ -2,6 +2,7 @@ A2038::Application.routes.draw do
 	get "login/index"
 	get "login/waiting"
 	get "login/logged_in"
+	get "login/update"
 	get	"game/start"
 	
 	resources	:sessions, :only => [:create, :destroy]
@@ -13,6 +14,8 @@ A2038::Application.routes.draw do
 	resources	:customers
 	resources	:players
 	resources	:games
+	resources	:events
+	resources	:shares
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

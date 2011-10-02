@@ -2,9 +2,14 @@ module SessionsHelper
 
 	def sign_in(player)
 		cookies.permanent.signed[:remember_token] = [player.id, player.customer.salt]
-		player.activated = true
-		player.save
 		this_player = player
+		Player.activate(player)
+	end
+	
+	def sign_out(player)
+		cookies.delete(:remember_token)
+		Player.deactivate(player)
+		this_player = nil
 	end
 
 	def this_player=(player)
