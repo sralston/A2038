@@ -15,6 +15,8 @@ class CreateGames < ActiveRecord::Migration
         t.timestamps
     end
     add_index :games, :game_code
+    add_index :games, :first_player_id
+    add_index :games, :current_player_id
   end
 
   def self.down

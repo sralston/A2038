@@ -5,6 +5,7 @@ class Game < ActiveRecord::Base
 	belongs_to	:first_player, :foreign_key => "first_person_id", :class_name=>"Player"
 	belongs_to	:current_player, :foreign_key => "current_player_id", :class_name=>"Player"
 	has_many	:customers, :through => :players
+	has_many	:corporations, :through => :players
 	has_many	:private_companies, :as => :priv_co_owner
 	has_many	:independent_companies, :as => :ind_co_owner
 	has_many	:events

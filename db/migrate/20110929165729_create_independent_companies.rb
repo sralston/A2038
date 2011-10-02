@@ -5,7 +5,7 @@ class CreateIndependentCompanies < ActiveRecord::Migration
 		t.string		:name, :null=>false, :limit=>50
 		t.string		:tag_line, :limit=>255, :null=>true
 		t.integer		:bonus_amount, :null=>true
-		t.string		:bonus_type, :limit=>4, :null=>true
+		t.string		:bonus_type, :limit=>6, :null=>true
 		t.integer		:max_ships, :default=>2
 		t.integer		:max_claims, :default=>2
 		t.integer		:number
@@ -13,9 +13,13 @@ class CreateIndependentCompanies < ActiveRecord::Migration
 		t.string		:status, :null=>false, :default=>"UNBOUGHT"
 		t.integer		:income, :default=>0
 		t.boolean		:or_finished, :default => false
-		
+		t.string		:abbreviation, :limit=>3
+  		t.string		:bonus_text, :limit => 255
       	t.timestamps
     end
+    add_index		:independent_companies, :name
+    add_index		:independent_comapnies, :abbreviation
+    add_index		:independent_companies, [:ind_co_owner_id, :ind_co_owner_type], :name=>"ind_co_indx"
   end
 
   def self.down

@@ -5,7 +5,7 @@ class CreateCorporations < ActiveRecord::Migration
 		t.string		:name, :limit=>50, :null=>false
 		t.string		:group, :limit=>1, :null=>true
 		t.string		:tag_line, :limit=>255, :null=>true
-		t.string		:bonus_type, :limit=>4, :null=>true
+		t.string		:bonus_type, :limit=>6, :null=>true
 		t.integer		:bonus_amount, :null=>true
 		t.integer		:max_bases, :default=>0
 		t.integer		:max_refuels, :default=>0
@@ -16,8 +16,12 @@ class CreateCorporations < ActiveRecord::Migration
 		t.integer		:treasury, :default=>0
 		t.string		:status, :null=>false, :default=>"UNLAUNCHED"
 		t.boolean		:or_finished, :default=>false
+  		t.string		:abbreviation, :limit=>3, :null=>false
+  		t.integer		:stock_price_order, :default=>1
+  		t.string		:bonus_text, :limit=>255
       	t.timestamps
     end
+    add_index	:corporations, :player_id
   end
 
   def self.down

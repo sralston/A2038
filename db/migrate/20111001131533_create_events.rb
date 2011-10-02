@@ -9,6 +9,8 @@ class CreateEvents < ActiveRecord::Migration
 		
       	t.timestamps
     end
+    add_index :events, :game_id
+    add_index :events, :code
   end
 
   def self.down

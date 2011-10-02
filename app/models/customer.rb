@@ -6,7 +6,7 @@ class Customer < ActiveRecord::Base
 	email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
 	validates	:name, :presence => true, :length => { :maximum => 30 }
-	validates	:username, :presence => true, :length => { :maximum => 30},
+	validates	:username, :presence => true, :length => { :maximum => 15},
 				:uniqueness => { :case_sensitive => false }
 	validates	:email, :presence => true, :length => { :maximum => 120 },
 				:format => { :with => email_regex }
