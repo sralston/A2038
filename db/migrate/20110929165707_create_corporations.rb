@@ -1,9 +1,9 @@
 class CreateCorporations < ActiveRecord::Migration
   def self.up
     create_table :corporations do |t|
-		t.references	:player, :null=>true	
+		t.references	:corp_owner, :polymorphic => true
 		t.string		:name, :limit=>50, :null=>false
-		t.string		:group, :limit=>1, :null=>true
+		t.string		:group, :limit=>1
 		t.string		:tag_line, :limit=>255, :null=>true
 		t.string		:bonus_type, :limit=>6, :null=>true
 		t.integer		:bonus_amount, :null=>true
@@ -21,7 +21,9 @@ class CreateCorporations < ActiveRecord::Migration
   		t.string		:bonus_text, :limit=>255
       	t.timestamps
     end
-    add_index	:corporations, :player_id
+    add_index	:corporations, [:corp_owner_id, :corp_owner_type], :name => "corp_own_indx"
+    add_index	:corporations, :name
+    add_index	:corporations, :abbreviation
   end
 
   def self.down

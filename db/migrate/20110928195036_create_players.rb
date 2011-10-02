@@ -12,6 +12,7 @@ class CreatePlayers < ActiveRecord::Migration
     end
     	add_index :players, :game_id
     	add_index :players, :customer_id
+    	add_index :players, [:game_id, :customer_id], :name => "game_cust_indx"
   end
 
   def self.down

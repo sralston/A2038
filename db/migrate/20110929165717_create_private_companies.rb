@@ -1,7 +1,7 @@
 class CreatePrivateCompanies < ActiveRecord::Migration
   def self.up
     create_table :private_companies do |t|
-		t.references 	:priv_co_owner, :polymorphic => true, :null => true
+		t.references 	:priv_co_owner, :polymorphic => true
 		t.string		:name, :limit => 50, :null => false
 		t.string		:tag_line, :limit => 255, :null => true
 		t.integer		:income

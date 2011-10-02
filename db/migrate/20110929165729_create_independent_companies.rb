@@ -1,7 +1,7 @@
 class CreateIndependentCompanies < ActiveRecord::Migration
   def self.up
     create_table :independent_companies do |t|
-		t.references	:ind_co_owner, :polymorphic => true, :null=>true
+		t.references	:ind_co_owner, :polymorphic => true
 		t.string		:name, :null=>false, :limit=>50
 		t.string		:tag_line, :limit=>255, :null=>true
 		t.integer		:bonus_amount, :null=>true
@@ -18,7 +18,7 @@ class CreateIndependentCompanies < ActiveRecord::Migration
       	t.timestamps
     end
     add_index		:independent_companies, :name
-    add_index		:independent_comapnies, :abbreviation
+    add_index		:independent_companies, :abbreviation
     add_index		:independent_companies, [:ind_co_owner_id, :ind_co_owner_type], :name=>"ind_co_indx"
   end
 

@@ -4,6 +4,7 @@ A2038::Application.routes.draw do
 	get "login/logged_in"
 	get "login/update"
 	get	"game/start"
+	get "game/init"
 	
 	resources	:sessions, :only => [:create, :destroy]
 	

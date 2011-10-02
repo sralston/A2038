@@ -2,7 +2,7 @@ class CreateCustomers < ActiveRecord::Migration
   def self.up
     create_table :customers do |t|
 		t.string		:name, :limit => 30, :null => false
-		t.string		:username, :limit => 15, :null => false
+		t.string		:username, :limit => 12, :null => false
 		t.string		:email, :limit => 120, :null => false
 		t.string		:motto, :limit => 255, :null => true
 		t.string		:salt
@@ -11,6 +11,8 @@ class CreateCustomers < ActiveRecord::Migration
         t.timestamps
     end
     add_index :customers, :username, :unique => true
+    add_index :customers, :email
+    add_index :customers, :name
   end
 
   def self.down
