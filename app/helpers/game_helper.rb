@@ -49,7 +49,7 @@ module GameHelper
 		i.name = "Torch"
 		i.abbreviation = "T"
 		i.number = 5
-		i.bonus_text = "Its spaceship(s) have +1 Movement"
+		i.bonus_text = "Its spaceship(s) have +1 Movement."
 		i.save
 		
 		#6 -- Lucky
@@ -57,7 +57,7 @@ module GameHelper
 		i.name = "Lucky"
 		i.abbreviation = "L"
 		i.number = 6
-		i.bonus_text = "Draws two tiles when exploring a hex and then chooses which tile to place"
+		i.bonus_text = "Draws two tiles when exploring a hex and then chooses which tile to place."
 		i.save
 		
 		# need to create TSI & AL for the shares
@@ -73,7 +73,7 @@ module GameHelper
 		c.par_value = 125
 		c.treasury = 250
 		c.group = "-"
-		c.bonus_text = "May place 3 claims / round; 2nd claim costs *75 (3rd costs *100). Its last ship may not be bought. *250 initial capitalization"
+		c.bonus_text = "May place 3 claims / round; 2nd claim costs *75 (3rd costs *100). Its last ship may not be bought. *250 initial capitalization."
 		c.save
 
 		# creating the AI 10% shares
@@ -104,7 +104,7 @@ module GameHelper
 		c.treasury = c.par_value * 10
 		c.stock_value = c.par_value
 		c.group = "-"
-		c.bonus_text = "Receives Probe as one of its four initially allowed spaceships"
+		c.bonus_text = "Receives Probe as one of its four initially allowed spaceships."
 		c.save
 		
 		# creating the TSI 10% shares	

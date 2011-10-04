@@ -1,0 +1,40 @@
+<html>
+
+<head>
+
+<script>
+
+	function test1(a, b) {
+	
+		if (typeof b === 'function') {
+			b();
+		}
+		
+		alert("1a: this should fire second");
+	}
+
+	function test2() {
+		alert("2b: this should fire first!");
+	}
+	
+	$(document).ready(function () {
+	
+/*		test1('', function() {
+			
+			test2();
+			
+		}); */
+	
+		test1('', test2());
+	
+	
+	});
+
+</script>
+
+</head>
+<body>
+testing...
+</body>
+
+</html>

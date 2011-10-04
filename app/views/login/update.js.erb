@@ -1,5 +1,2 @@
-<% @events.each do |e| %>
-
-	$.<%= e.code == "LOGIN_PLAYER" ? "login" : "logout" %>(<%= e.value %>, "<%= e.text %>", <%= e.id %>);
-	
-<% end %>
+//$.test_me(["LOGIN","LOGIN","LOGIN"],[1,2,3],["aadf","adfsdaf","a;lkdsfd"],[100,101,102]);
+$.test_me(["LOGIN","LOGOUT","THIRD"],[1,2,3],["adf","adfasdf","blahblah"],[100,101,102]);

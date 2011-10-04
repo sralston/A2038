@@ -5,6 +5,7 @@ A2038::Application.routes.draw do
 	get "login/update"
 	get	"game/start"
 	get "game/init"
+	get "login/testing"
 	
 	resources	:sessions, :only => [:create, :destroy]
 	

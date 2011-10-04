@@ -28,20 +28,23 @@ class LoginController < ApplicationController
 	end
 	
 	def update
-		@last_event_num = params[:login][:last_event_num]
+		#@last_event_num = params[:login][:last_event_num]
+		@last_event_num = params[:last_event_num]
 		if (this_player.game.players.where(:activated => false).count == 0) && (this_player.game.current_state == "NEW")
 		# all players are in, redirect to game_start_path
 			#send event to waiting to say everyone in
 	 		render :js => "$.redirect('" + game_start_url + "');" 
 		else
-			@events = this_player.game.events.where("id > ?",@last_event_num).where("code LIKE ?","LOG%")
+			@events = this_player.game.events.select("id, code, text, value").where("id > ?",@last_event_num).where("code LIKE ?","LOG%").order("id ASC")
 			
 			if (@events.count == 0)
-				render :js => "$.no_updates();"
+				#render :js => "$.no_updates();"
+				render :json => '[{"event":{"code":"NO_UPDATE","id":' + @last_event_num + ',"text":"No new players have logged in...","value":0}}]'
 			else
-				respond_to do |format|
-  				format.js
-  				end
+				#respond_to do |format|
+  				#format.js
+  				#format.json { render :json => @events.to_json }
+  				render :json => @events.to_json
   			end
   		end
 	end

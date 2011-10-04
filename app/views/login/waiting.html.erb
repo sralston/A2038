@@ -2,29 +2,69 @@
 	var lastEventNum = <%= @last_event_num %>;
 	var interval;
 	var ping_time = 6000; 
-	
+/*	
 	//var interval = self.setInterval("request_update(lastEventNum)", 3000);
 	
 	//jQuery.first1 = function(message) {
 	//	alert(message);
 	//}
 
+	jQuery.event_test = function(c, v, t, lastEventID) {
+		//interval=window.clearInterval(interval);
+		
+		switch(c) {
+			case 'LOGIN':
+				//jQuery.test_me(v);
+				//stuff
+				break;
+			case 'LOGOUT':
+
+				//stuff
+				break;
+		}
+	}
 	
-	jQuery.request_login_update = function() {
+	var trythis = function(x) {
+		return function() {
+			return this.x;
+			//$("#login_event_text").fadeOut('slow',function() {
+			//	$("#login_event_text").html("eventtest#	"+x).fadeIn('slow', function () { });
+			//});
+		};	
+	};
+				
+	jQuery.test_me = function (c, v, t, eventID) {
+		alert("in test_me: "+c+" / "+c.length+" / "+c[0]+" ? "+c[1]);
+		//$.stop_requests();
+		
+		for (var x = 0, len=eventID.length; x < len; x++) {	
+			alert("in loop: "+trythis(x));
+			//$("#login_event_text").fadeOut('slow',function() {
+			//	$("#login_event_text").html("eventtest#	"+x).fadeIn('slow', function () { });
+			//});
+		}
+		lastEventNum = lastEventID[eventID.length];
+		//$.request_login_update();
+	}
+*/	
+	jQuery.stop_requests = function () {
+		interval=window.clearInterval(interval);
+	}
+	
+/*	jQuery.request_login_update = function() {
 		interval = setInterval(function() {
 			$("#login_last_event_num").val(lastEventNum);
 			$("#remote_update_form").submit();
 		}, ping_time);
 	}
-	
-	jQuery.no_updates = function() {
+*/	
+	jQuery.no_updates = function(eventText) {
 		$("#login_event_text").fadeOut('slow', function() { 
-			$("#login_event_text").html("No updates...").fadeIn('slow', function() { });
+			$("#login_event_text").html(eventText).fadeIn('slow', function() { });
 		});
 	}
 	
-	jQuery.login = function(player_num, te, last_event_id) {
-		lastEventNum = last_event_id;
+	jQuery.login = function(player_num, te) {
 		$("#player_"+player_num).html("[Active!]").css("color","green");
 		$("#login_event_text").fadeOut('slow', function() {
 			$("#login_event_text").html(te).fadeIn('slow', function() { });
@@ -32,8 +72,7 @@
 
 	}
 	
-	jQuery.logout = function(player_num, te, last_event_id) {
-		lastEventNum = last_event_id;		
+	jQuery.logout = function(player_num, te) {	
 		$("#player_"+player_num).html("[Waiting]").css("color","red");
 		$("#login_event_text").fadeOut('slow', function () {
 			$("#login_event_text").html(te).fadeIn('slow', function() { });
@@ -44,8 +83,45 @@
 		window.location = new_addr;
 	}
 	
+	jQuery.requestLoginUpdate = function () {
+
+		interval = setInterval(function() {
+			$.get('<%= login_update_path %>',
+				{ last_event_num : lastEventNum },
+				function(d) {
+					//do stuff when receive back in JSON
+					interval=window.clearInterval(interval); // pause the request for updates.
+										
+					for (var x = 0, len = d.length; x < len; x++) function(x) {
+					
+					  return function() {					
+						switch(d[x].event.code) {
+							case 'LOGIN_PLAYER':
+								$.login(d[x].event.value, d[x].event.text);
+								break;
+							case 'LOGOUT_PLAYER':
+								$.logout(d[x].event.value, d[x].event.text);
+								break;
+							case 'NO_UPDATE':
+								$.no_updates(d[x].event.text);
+								break;
+							case 'LOGIN':
+								$.login(d[x].event.value, d[x].event.text);
+								break;
+						}
+					  };
+					}(x);
+					lastEventNum = d[d.length-1].event.id;
+					$.requestLoginUpdate();
+				}, "json"
+			);
+		}, ping_time);
+	};
+	
 	$(document).ready(function() {
-		$.request_login_update()
+	//	$.request_login_update();
+	//	$.event_handler("LOGIN",5,"Player 5 in",$.event_handler("LOGOUT",3,"Player 3 out"));
+		$.requestLoginUpdate();
 	});
 	
 </script>

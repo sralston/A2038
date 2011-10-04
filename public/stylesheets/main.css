@@ -129,6 +129,11 @@ body {
 	border-left-width: 2px;
 	border-left-style: solid;
 	vertical-align: middle;
+	font-weight: bold;
+	color: #334c84;
+	font-size:12px;
+	font-family: arial, sans-serif;
+	text-shadow: 2px 2px 3px white;
 }
 
 .bidding_second_line {
@@ -167,4 +172,5 @@ table {
 	text-align: left;
 	font-family: Courier New, monospace;
 	font-size: 10px;
+	z-index: 2;
 }

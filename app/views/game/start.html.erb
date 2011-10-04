@@ -5,16 +5,16 @@
 				<%= @privs[0].number %>
 			</div>
 			<div class="bidding_name">
-				<table style="height: 100%; vertical-align: middle;"><tr><td><%= @privs[0].name %> (<%= @privs[0].abbreviation %>)</td></tr></table>
+				<table style="height: 100%; width: 100%; vertical-align: middle;"><tr><td><%= @privs[0].name %> (<%= @privs[0].abbreviation %>)</td></tr></table>
 			</div>
 		</div>
 			
 		<div class="bidding_second_line">
-			<table style="height:100%;vertical-align:middle;"><tr><td>Income: *<%= @privs[0].income %></td></tr></table>
+			<table style="height:100%;vertical-align:middle; width: 100%"><tr><td>Income: *<%= @privs[0].income %></td></tr></table>
 		</div>
 		
 		<div class="bidding_third_line">
-			<table style="height:100%;vertical-align:middle;"><tr><td><button type="button">Bid</button>&nbsp&nbsp<input type="number" size=4 value="<%= @privs[0].starting_bid %>" />&nbsp&nbsp<button type="button" disabled="disabled">Buy</button></td></tr></table>
+			<table style="height:100%;vertical-align:middle; width: 100%;"><tr><td><button type="button">Bid</button>&nbsp&nbsp<input type="number" size=4 value="<%= @privs[0].starting_bid %>" />&nbsp&nbsp<button type="button" disabled="disabled">Buy</button></td></tr></table>
 		</div>
 	</div>
 
@@ -28,16 +28,16 @@
 				<%= ind.number %>
 			</div>
 			<div class="bidding_name">
-				<table style="height:100%;vertical-align:middle;"><tr><td><%= ind.name %> (<%= ind.abbreviation %>)</td></tr></table>
+				<table style="height:100%; width: 100%; vertical-align:middle;"><tr><td><%= ind.name %> (<%= ind.abbreviation %>)</td></tr></table>
 			</div>
 		</div>
 			
 		<div class="bidding_second_line">
-			<table style="height:100%;vertical-align:middle;"><tr><td><%= (ind.income != 0) ? "Income: *" + ind.income.to_s + "; " : "" %><%= ind.bonus_text %></td></tr></table>
+			<table style="height:100%;vertical-align:middle;width:100%;"><tr><td><%= (ind.income != 0) ? "Income: *" + ind.income.to_s + "; " : "" %><%= ind.bonus_text %></td></tr></table>
 		</div>
 		
 		<div class="bidding_third_line">
-			<table style="height:100%;vertical-align:middle;"><tr><td><button type="button">Bid</button>&nbsp&nbsp<input type="number" size=4 value="100" />&nbsp&nbsp<button type="button" disabled="disabled">Buy</button></td></tr></table>
+			<table style="height:100%;vertical-align:middle; width: 100%;"><tr><td><button type="button">Bid</button>&nbsp&nbsp<input type="number" size=4 value="100" />&nbsp&nbsp<button type="button" disabled="disabled">Buy</button></td></tr></table>
 		</div>
 	</div>
 	
@@ -54,16 +54,16 @@
 				<%= @privs[priv].number %>
 			</div>
 			<div class="bidding_name">
-				<table style="height:100%;vertical-align:middle;"><tr><td><%= @privs[priv].name %> (<%= @privs[priv].abbreviation %>)</td></tr></table>
+				<table style="height:100%;vertical-align:middle; width: 100%;"><tr><td><%= @privs[priv].name %> (<%= @privs[priv].abbreviation %>)</td></tr></table>
 			</div>
 		</div>
 			
 		<div class="bidding_second_line">
-			<table style="height:100%;vertical-align:middle;"><tr><td>Income: *<%= @privs[priv].income %>;&nbsp&nbsp<%= @privs[priv].bonus_text %></td></tr></table>
+			<table style="height:100%;vertical-align:middle;width:100%"><tr><td>Income: *<%= @privs[priv].income %>;&nbsp&nbsp<%= @privs[priv].bonus_text %></td></tr></table>
 		</div>
 		
 		<div class="bidding_third_line">
-			<table style="height:100%;vertical-align:middle;"><tr><td><button type="button">Bid</button>&nbsp&nbsp<input type="number" size=4 value="<%= @privs[priv].starting_bid %>" />&nbsp&nbsp<button type="button" disabled="disabled">Buy</button></td></tr></table>
+			<table style="height:100%;vertical-align:middle; width:100%"><tr><td><button type="button">Bid</button>&nbsp&nbsp<input type="number" size=4 value="<%= @privs[priv].starting_bid %>" />&nbsp&nbsp<button type="button" disabled="disabled">Buy</button></td></tr></table>
 		</div>
 	</div>
 	
