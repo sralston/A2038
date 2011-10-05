@@ -1,3 +1,4 @@
+<%= stylesheet_link_tag "main" %>
 <script language=javascript>
 	var lastEventNum = <%= @last_event_num %>;
 	var interval;
@@ -82,19 +83,43 @@
 	jQuery.redirect = function(new_addr) {
 		window.location = new_addr;
 	}
+
 	
 	jQuery.requestLoginUpdate = function () {
 
 		interval = setInterval(function() {
 			$.get('<%= login_update_path %>',
 				{ last_event_num : lastEventNum },
-				function(d) {
+				function(data) {
 					//do stuff when receive back in JSON
 					interval=window.clearInterval(interval); // pause the request for updates.
-										
-					for (var x = 0, len = d.length; x < len; x++) function(x) {
+
+					$.each(data, function(x, events) {
+						$.each(events, function(y, event) {
+							switch(event.code) {
+								case 'LOGIN_PLAYER':
+									$.login(event.value, event.text);
+									break;
+								case 'LOGOUT_PLAYER':
+									$.logout(event.value, event.text);
+									break;
+								case 'NO_UPDATE':
+								
+									$.no_updates(event.text);
+									break;
+								case 'LOGIN':
+									$.login(event.value, event.text);
+									break;
+							}  // end of switch
+						
+						});
 					
-					  return function() {					
+					});
+
+
+					/*					
+					for (var x = 0, len = d.length; x < len; x++) {
+					
 						switch(d[x].event.code) {
 							case 'LOGIN_PLAYER':
 								$.login(d[x].event.value, d[x].event.text);
@@ -108,27 +133,46 @@
 							case 'LOGIN':
 								$.login(d[x].event.value, d[x].event.text);
 								break;
-						}
-					  };
-					}(x);
-					lastEventNum = d[d.length-1].event.id;
+						}  // end of switch
+					}  // end of for loop
+					
+					*/
+					
+					lastEventNum = data[data.length-1].event.id;
 					$.requestLoginUpdate();
 				}, "json"
 			);
 		}, ping_time);
 	};
+
+
+(function($) {
+
+	$.fn.showLinkLocation = function () {
+		return this.each(function () {
+			$(this).html("wow!");
+		});
+	};
+
+}(jQuery));
+
+
 	
 	$(document).ready(function() {
-	//	$.request_login_update();
 	//	$.event_handler("LOGIN",5,"Player 5 in",$.event_handler("LOGOUT",3,"Player 3 out"));
 		$.requestLoginUpdate();
+		$('p').click(function() { $(this).slideUp('fast',function () { }); } );
+		$('#ohmy').click(function() { $('p').slideDown('fast', function () { $('p').html("WOW"); }); });
+		
+
+		
 	});
 	
 </script>
 
 <button onclick="interval=window.clearInterval(interval)">stop</button>
 <button onclick="$.request_login_update()">start</button>
-<button onclick="window.location='http://www.zerohedge.com';">location!</button>
+<a href='http://www.zerohedge.com'>location!</a>
 <%= button_to "Logout", session_path(this_player), :method=>:delete %>
 
 <div class="wrapper">
@@ -169,7 +213,7 @@
 
 
 <br />
-
+<p class="test">123</p><p class="test">456</p><p class="test">789</p>
 <div id="ohmy">bitchz!</div>
 
 <%= form_for :login, :url => { :controller=>:login, :action=>:update }, :html => {:method=>:get, :id => "remote_update_form"} , :remote=>true do |f| %>

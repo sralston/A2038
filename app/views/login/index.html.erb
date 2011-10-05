@@ -1,73 +1,42 @@
+<%= stylesheet_link_tag "login" %>
+
 <script language=javascript>
-	//var interval = self.setInterval("request_update(lastEventNum)", 3000);
-	
-	jQuery.inputHighlight = function(color) {
-		$(".login_inputs").each(function() {
-			$(this).focus(function() {
-				$(this).css({"background" : color});
-			});
-			$(this).blur(function() {
-				$(this).css({"background" : "white"});
-			});
-		});
-	}
 	
 	$(document).ready(function() {
-		$.inputHighlight("#a6cdec");
+		$.inputHighlight("#f7e944");
 	});
 	
 </script>
 
-<div class="wrapper">
-
-	<div class="login_graphic">
-		<%= image_tag "2038_box_cover.jpg" %>
-	</div>
+<div class="main_screen">
 	
 	<div class="login_area">
-		
-		<div class="login_box">
-			<br />
-			<span style="text-align: center; font-weight: bold;">
-				Welcome! 
-				<br/>Please log in
-			</span>
-		
-			<br />
-			<br />
-			<hr />		
-			<br />
+		<div class="login_area_title">Please Log In:</div>
 
-			<%= form_for(:session, :url=> sessions_path) do |f| %>
-		
-			<table style="text-align: right; padding: 3px; line-height: 35px;">
-				<tr>
-					<td>Username:</td>
-					<td>&nbsp&nbsp<%= f.text_field :username, :size=>15, :class=>"login_inputs" %></td>
-				</tr>
+			<%= form_for(:session, :url=> sessions_path, :html=> { :id =>"login_form" } ) do |f| %>
 
-				<tr>
-					<td>Password:</td>
-					<td>&nbsp&nbsp<%= f.password_field :password, :size=>15, :class=>"login_inputs" %></td>
-				</tr>
-				
-				<tr>
-					<td>Gamecode:</td>
-					<td>&nbsp&nbsp<%= f.text_field :gamecode, :size=>15, :class=>"login_inputs" %></td>
-				</tr>
-				
-			</table>
-
-			<br />
+		<table class="login_area_form">
+			<tr>
+				<td class="login_area_input_name">Username:&nbsp</td>
+				<td><%= f.text_field :username, :size=>15, :class=>"login_input" %></td>
+			</tr>
 			
-			<span style="text-align: center;">
-			<%= f.submit "Log in" %>
-			</span>
-						
-			<% end %>			
+			<tr>
+				<td class="login_area_input_name">Password:&nbsp</td>
+				<td><%= f.password_field :password, :size=>15, :class=>"login_input" %></td>
+			</tr>	
+			
+			<tr>
+				<td class="login_area_input_name">Gamecode:&nbsp</td>
+				<td><%= f.text_field :gamecode, :size=>15, :class=>"login_input" %></td>
+			</tr>		
 		
-			<br />
-			<hr />
-		</div>
+			</table>
+			
+			<div class="login_submit_line">
+				<a onClick="$('#login_form').submit()" onMouseOver="$('.login_submit').css('background-color','#334c84');" onMouseOut="$('.login_submit').css('background-color','black');" class="login_submit">Log In</a>
+			</div>
+			
+			<% end %>
 	</div>
 </div>
