@@ -1,0 +1,801 @@
+body {
+	background-image: url("../images/init_bidding_bg.jpg");
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: black;
+	background-attachment:fixed;
+}
+
+.main_wrapper {
+	width: 600px;
+	height: 660px;
+	position: absolute;
+	top: 50%;
+	margin-top: -330px;
+	left: 50%;
+	margin-left: -300px;
+	border: 6px solid #161617;
+	-mox-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;	
+}
+
+.init_bidding_title {
+	height: 38px;
+	line-height: 38px;
+	font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 18px;
+	color: #334c84;
+	font-weight: bold;
+	background-color: #c4c4c4;
+	background-color: rgba(196,196,196,0.7);		
+	border-bottom-color: black;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	text-shadow: 1px 1px 1px black;
+}
+
+.upper_wrapper {
+	height: 40px;
+	width: 600px;
+}
+
+.init_bidding_co_title {
+	height: 40px;
+	width: 240px;
+	line-height: 40px;
+	font-family: arial, sans-serif;
+	font-size: 14px;
+	color: #f3e852;
+	font-weight: normal;
+	background-color: #334c84;
+	background-color: rgba(51,75,132,0.7);	
+	font-style: italic;
+	float: left;
+}
+
+.top_line_button_box {
+	float: left;
+	width: 96px;
+	height: 40px;
+	background-color: #c4c4c4;
+	background-color: rgba(196,196,196,0.7);	
+	border-left-width: 2px;
+	border-right-width: 2px;
+	border-left-color: black;
+	border-right-color: black;
+	border-left-style: solid;
+	border-right-style: solid;
+	line-height: 40px;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.middle_wrapper {
+	height: 298px;
+	width: 600px;
+	border-bottom-width: 2px;
+	border-bottom-color: black;
+	border-bottom-style: solid;
+}
+
+.init_bidding_co_number_wrapper {
+	width: 50px;	
+	height: 298px;
+	float: left;
+	background-color: #334c84;
+	background-color: rgba(51,75,132,0.7);
+}	
+
+.init_bidding_co_number {
+	position: relative;
+	font-family: courier new, monospace;
+	background-color: #c4c4c4;
+	color: black;
+	font-size: 18px;
+	font-weight: bold;
+	width: 30px;
+	height: 28px;
+	line-height: 30px;
+	margin: 8px 8px 16px;
+	padding-top: 2px;
+	border: 2px solid black;
+	vertical-align: middle;
+	text-align: center;
+	-mox-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-moz-box-shadow: 2px 2px 3px black;
+	-webkit-box-shadow: 2px 2px 3px black;
+	box-shadow: 2px 2px 3px black;
+}
+
+/* BIDDING FLAGS */
+
+	/* LEFT BIDDING FLAG */
+
+.bidding_flag_wrapper_left {
+	z-index: 2;
+	position: absolute;
+	top: 2px;
+	right: 25px;
+	width: 120px;
+	height: 34px;
+}
+
+.bidding_flag_handle_wrapper_left {
+	width: 14px;
+	height: 34px;
+	float: right;
+}
+
+.bidding_flag_handle_left {
+	background-color: #f3e852;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-right-width: 2px;
+	border-right-style: solid;
+	border-right-color: black;
+	height: 10px;
+	width: 12px;
+}
+
+.bidding_flag_no_handle_left {
+	height: 20px;
+	width: 12px;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-left-width: 2px;
+	border-left-style: solid;
+	border-left-color: black;
+}
+
+.bidding_flag_text_area_left {
+	font-family: arial, sans-serif;
+	font-size: 12px;
+	color: black;
+	background-color: #f3e852;
+	float: left;
+	width: 104px;
+	text-align: center;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-left-width: 2px;
+	border-left-style: solid;
+	border-left-color: black;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: black;
+	-mox-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-moz-box-shadow: -2px 2px 6px black;
+	-webkit-box-shadow: -2px 2px 6px black;
+	box-shadow: -2px 2px 6px black;
+}
+
+.bidding_flag_text_title_left {
+	transform:rotate(-90deg);
+	-ms-transform:rotate(-90deg); /* IE 9 */
+	-moz-transform:rotate(-90deg); /* Firefox */
+	-webkit-transform:rotate(-90deg); /* Safari and Chrome */
+	-o-transform:rotate(-90deg); /* Opera */
+	float: left;
+	width:18px;
+}
+
+.bidding_flag_text_left {
+	float: left;
+	width: 62px;
+	font-style: italic;
+	vertical-align: middle;
+	line-height: 30px;
+}
+
+	/* end bidding flag left */
+	
+	/* RIGHT BIDDING FLAG */
+
+.bidding_flag_wrapper_right {
+	z-index: 2;
+	position: absolute;
+	top: 2px;
+	left: 25px;
+	width: 120px;
+	height: 34px;
+}
+
+.bidding_flag_handle_wrapper_right {
+	width: 14px;
+	height: 34px;
+	float: left;
+}
+
+.bidding_flag_handle_right {
+	background-color: #f3e852;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-left-width: 2px;
+	border-left-style: solid;
+	border-left-color: black;
+	height: 10px;
+	width: 12px;
+}
+
+.bidding_flag_no_handle_right {
+	height: 20px;
+	width: 12px;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-right-width: 2px;
+	border-right-style: solid;
+	border-right-color: black;
+}
+
+.bidding_flag_text_area_right {
+	font-family: arial, sans-serif;
+	font-size: 12px;
+	color: black;
+	background-color: #f3e852;
+	float: right;
+	width: 104px;
+	text-align: center;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-right-width: 2px;
+	border-right-style: solid;
+	border-right-color: black;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: black;
+	-mox-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-moz-box-shadow: 2px 2px 6px black;
+	-webkit-box-shadow: 2px 2px 6px black;
+	box-shadow: 2px 2px 6px black;
+}
+
+.bidding_flag_text_title_right {
+	transform:rotate(-90deg);
+	-ms-transform:rotate(-90deg); /* IE 9 */
+	-moz-transform:rotate(-90deg); /* Firefox */
+	-webkit-transform:rotate(-90deg); /* Safari and Chrome */
+	-o-transform:rotate(-90deg); /* Opera */
+	float: right;
+	width:18px;
+}
+
+.bidding_flag_text_right {
+	float: right;
+	width: 62px;
+	font-style: italic;
+	vertical-align: middle;
+	line-height: 30px;
+}
+
+	/* end of bidding flag right */
+	
+/* end of biddings flags */
+
+/* BUY FLAGS */
+
+	/* BUY FLAG LEFT */
+
+.buy_flag_wrapper_left {
+	z-index: 2;
+	position: absolute;
+	top: 2px;
+	right: 25px;
+	width: 68px;
+	height: 34px;
+}
+
+.buy_flag_handle_wrapper_left {
+	width: 14px;
+	height: 34px;
+	float: right;
+}
+
+.buy_flag_handle_left {
+	background-color: #3e6a4b;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-right-width: 2px;
+	border-right-style: solid;
+	border-right-color: black;
+	height: 10px;
+	width: 12px;
+}
+
+.buy_flag_no_handle_left {
+	height: 20px;
+	width: 12px;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-left-width: 2px;
+	border-left-style: solid;
+	border-left-color: black;
+}
+
+.buy_flag_text_area_left {
+	font-family: arial, sans-serif;
+	font-size: 12px;
+	color: black;
+	background-color: #3e6a4b;
+	float: left;
+	width: 52px;
+	text-align: center;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-left-width: 2px;
+	border-left-style: solid;
+	border-left-color: black;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: black;
+	-mox-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-moz-box-shadow: -2px 2px 6px black;
+	-webkit-box-shadow: -2px 2px 6px black;
+	box-shadow: -2px 2px 6px black;
+}
+
+.buy_flag_text_title_left {
+	transform:rotate(-90deg);
+	-ms-transform:rotate(-90deg); /* IE 9 */
+	-moz-transform:rotate(-90deg); /* Firefox */
+	-webkit-transform:rotate(-90deg); /* Safari and Chrome */
+	-o-transform:rotate(-90deg); /* Opera */
+	float: left;
+	width:18px;
+}
+
+.buy_flag_text_left {
+	float: left;
+	width: 34px;
+	font-style: italic;
+	vertical-align: middle;
+	line-height: 30px;
+}
+
+	/* end of buy flag left */
+	
+	/* BUY FLAG RIGHT */
+
+.buy_flag_wrapper_right {
+	z-index: 2;
+	position: absolute;
+	top: 2px;
+	left: 25px;
+	width: 68px;
+	height: 34px;
+}
+
+.buy_flag_handle_wrapper_right {
+	width: 14px;
+	height: 34px;
+	float: left;
+}
+
+.buy_flag_handle_right {
+	background-color: #3e6a4b;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-left-width: 2px;
+	border-left-style: solid;
+	border-left-color: black;
+	height: 10px;
+	width: 12px;
+}
+
+.buy_flag_no_handle_right {
+	height: 20px;
+	width: 12px;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-right-width: 2px;
+	border-right-style: solid;
+	border-right-color: black;
+}
+
+.buy_flag_text_area_right {
+	font-family: arial, sans-serif;
+	font-size: 12px;
+	color: black;
+	background-color: #3e6a4b;
+	float: right;
+	width: 52px;
+	text-align: center;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-right-width: 2px;
+	border-right-style: solid;
+	border-right-color: black;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: black;
+	-mox-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-moz-box-shadow: 2px 2px 6px black;
+	-webkit-box-shadow: 2px 2px 6px black;
+	box-shadow: 2px 2px 6px black;
+}
+
+.buy_flag_text_title_right {
+	transform:rotate(-90deg);
+	-ms-transform:rotate(-90deg); /* IE 9 */
+	-moz-transform:rotate(-90deg); /* Firefox */
+	-webkit-transform:rotate(-90deg); /* Safari and Chrome */
+	-o-transform:rotate(-90deg); /* Opera */
+	float: right;
+	width:18px;
+}
+
+.buy_flag_text_right {
+	float: right;
+	width: 34px;
+	font-style: italic;
+	vertical-align: middle;
+	line-height: 30px;
+}
+
+	/* end of buy flag right */
+	
+/* end of buy flags */
+
+/* BOUGHT FLAGS */
+
+	/* BOUGHT FLAG LEFT */
+
+.bought_flag_wrapper_left {
+	z-index: 2;
+	position: absolute;
+	top: 2px;
+	right: 25px;
+	width: 120px;
+	height: 34px;
+}
+
+.bought_flag_handle_wrapper_left {
+	width: 14px;
+	height: 34px;
+	float: right;
+}
+
+.bought_flag_handle_left {
+	background-color: #a83b46;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-right-width: 2px;
+	border-right-style: solid;
+	border-right-color: black;
+	height: 10px;
+	width: 12px;
+}
+
+.bought_flag_no_handle_left {
+	height: 20px;
+	width: 12px;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-left-width: 2px;
+	border-left-style: solid;
+	border-left-color: black;
+}
+
+.bought_flag_text_area_left {
+	font-family: arial, sans-serif;
+	font-size: 12px;
+	color: black;
+	background-color: #a83b46;
+	font-style: italic;
+	line-height: 30px;
+	vertical-align: center;
+	float: left;
+	width: 104px;
+	text-align: center;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-left-width: 2px;
+	border-left-style: solid;
+	border-left-color: black;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: black;
+	-mox-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-moz-box-shadow: -2px 2px 6px black;
+	-webkit-box-shadow: -2px 2px 6px black;
+	box-shadow: -2px 2px 6px black;
+}
+
+	/* end of bought flag left */
+	
+	/* BOUGHT FLAG RIGHT */
+	
+.bought_flag_wrapper_right {
+	z-index: 2;
+	position: absolute;
+	top: 2px;
+	left: 25px;
+	width: 120px;
+	height: 34px;
+}
+
+.bought_flag_handle_wrapper_right {
+	width: 14px;
+	height: 34px;
+	float: left;
+}
+
+.bought_flag_handle_right {
+	background-color: #a83b46;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-left-width: 2px;
+	border-left-style: solid;
+	border-left-color: black;
+	height: 10px;
+	width: 12px;
+}
+
+.bought_flag_no_handle_right {
+	height: 20px;
+	width: 12px;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-right-width: 2px;
+	border-right-style: solid;
+	border-right-color: black;
+}
+
+.bought_flag_text_area_right {
+	font-family: arial, sans-serif;
+	font-size: 12px;
+	color: black;
+	background-color: #a83b46;
+	font-style: italic;
+	line-height: 30px;
+	vertical-align: center;
+	float: right;
+	width: 104px;
+	text-align: center;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	border-right-width: 2px;
+	border-right-style: solid;
+	border-right-color: black;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: black;
+	-mox-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-moz-box-shadow: -2px 2px 6px black;
+	-webkit-box-shadow: 2px 2px 6px black;
+	box-shadow: 2px 2px 6px black;
+}	
+	/* end of bought flag right */
+	
+/* end of bought flags */
+
+.init_bidding_inner_info {
+	position: relative;
+	float: left;
+	width: 496px;
+	height: 298px;
+	background-color: #c4c4c4;
+	background-color: rgba(127,127,127,0.7);
+	border-top-width: 2px;
+	border-left-width: 2px;
+	border-right-width: 2px;
+	border-top-color: black;
+	border-left-color: black;
+	border-right-color: black;
+	border-top-style: solid;
+	border-left-style: solid;
+	border-right-style: solid;
+	-moz-box-shadow: 3px 3px 9px 7px black inset;
+	-webkit-box-shadow: 3px 3px 9px 7px black inset;
+	box-shadow: 3px 3px 9px 7px black inset;
+}
+
+.co_info_wrapper {
+	position: absolute;
+	width: 280px;
+	height: 200px;	
+	top: 50%;
+	margin-top: -110px;
+	left: 50%;
+	margin-left: -143px;
+	background-color: #c4c4c4;
+	border: 3px solid black;
+	-mox-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;	
+	display: none;
+	-moz-box-shadow: 3px 3px 9px 7px black inset;
+	-webkit-box-shadow: 3px 3px 9px 7px black inset;
+	box-shadow: 4px 4px 8px 4px black;
+}
+
+.co_title_line {
+	width: 280px;
+	height: 40px;
+	line-height: 40px;
+	vertical-align: middle;
+	
+}
+
+.co_title_num {
+	font-family: courier new, monospace;
+	font-size: 23px;
+	text-align: center;
+	width: 40px;
+	font-weight: bold;
+	text-shadow: 2px 2px 4px black;
+	color: #f3e852;
+	background-color: #334c84;
+	float: left;
+}
+
+.co_title_name {
+	font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
+	font-size: 14px;
+	text-align: left;
+	padding-left: 10px;
+	font-weight: bold;
+	border-left-width: 2px;
+	border-left-color: black;
+	border-left-style: solid;
+	width: 228px;
+	color: #334c84;
+	float: left;
+}
+
+.co_text_box {
+	font-family: arial, sans-serif;
+	font-size: 14px;
+	text-align: left;
+	padding: 10px;
+	width: 260px;
+	height: 178px;
+	border-top-width: 2px;
+	border-top-style: solid;
+	border-top-color: black;
+	color: black;
+	line-height: 20px;
+}
+
+
+.bottom_line_wrapper {
+	width: 600px;
+	height: 40px;
+}
+
+.bottom_line_title {
+	width: 240px;
+	height: 40px;
+	line-height: 40px;
+	font-family: arial, sans-serif;
+	font-size: 14px;
+	color: #f3e852;
+	font-weight: normal;
+	font-style: italic;
+	background-color: #334c84;
+	background-color: rgba(51,75,132,0.7);	
+	float: left;
+	vertical-align: middle;
+}
+
+.bottom_line_pass_box {
+	float: left;
+	width: 96px;
+	height: 38px;
+	line-height: 38px;
+	vertical-align: middle;
+	background-color: #c4c4c4;
+	background-color: rgba(196,196,196,0.7);	
+	text-align: center;
+	border-left-width: 2px;
+	border-right-width: 2px;
+	border-left-color: black;
+	border-right-color: black;
+	border-left-style: solid;
+	border-right-style: solid;
+	border-bottom-width: 2px;
+	border-bottom-style: solid;
+	border-bottom-color: black;
+}
+
+.bottom_wrapper {
+	width: 600px;
+	height: 240px;
+	background-color: #334c84;
+	background-color: rgba(51,75,132,0.7);
+}
+
+.player_info_wrapper {
+	width: 299px;
+	height: 240px;
+	float: left;
+	border-right-color: black;
+	border-right-style: solid;
+	border-right-width: 1px;
+}
+
+.player_info {
+	line-height: 32px;
+	vertical-align: middle;
+	font-family: arial, sans-serif;
+	font-size: 14px;
+	color: black;
+	text-align: left;
+	padding-left: 4px;
+}
+
+.current_player {
+	font-family: courier new, monospace;
+	font-size: 14px;
+	color: #a83b46;
+	text-align: left;
+	padding-left: 6px;
+	font-weight: bold;
+}
+
+.event_wrapper {
+	width: 299px;
+	height: 240px;
+	float: left;
+	border-left-color: black;
+	border-left-width: 1px;
+	border-left-style: solid;
+}
+
+.event_info {
+	font-family: arial, sans-serif;
+	font-size: 14px;
+	color: black;
+	line-height: 20px;
+	text-align: right;
+	vertical-align: middle;
+	font-weight: normal;
+	padding-right: 10px;
+}
+
+.init_bidding_button {
+	font-family: courier new, monospace;
+	vertical-align: middle;
+	font-size: 14px;
+	color: #334c84;
+	font-weight: bold;	
+	text-align: center;
+	margin-bottom: 4px;
+	display: none;
+}
+
+

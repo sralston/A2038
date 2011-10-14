@@ -134,6 +134,7 @@ module GameHelper
 		p.income = 10
 		p.number = 0
 		p.starting_bid = 50
+		p.bonus_text = "May be sold to a corporation starting in Phase II."
 		p.save
 		
 		#7 -- Tunnel Systems
@@ -143,7 +144,7 @@ module GameHelper
 		p.income = 5
 		p.number = 7
 		p.starting_bid = 120
-		p.bonus_text = "Corp. may place 1 free Base on any explored and unclaimed tile.  Player receives one 10% TSI Share."
+		p.bonus_text = "Corporation which buys this private company (after Phase I) may place 1 free Base on any explored and unclaimed tile.  Player receives one 10% TSI Share."
 		p.save
 		
 			# Add free item	
@@ -159,7 +160,7 @@ module GameHelper
 		p.income = 10
 		p.number = 8
 		p.starting_bid = 140
-		p.bonus_text = "Corp. may place 1 free Refueling Station within range.  Player receives one 10% TSI Share."
+		p.bonus_text = "Corporation which buys this private company (after Phase I) may place 1 free Refueling Station within range.  Player receives one 10% TSI Share."
 		p.save
 		
 			# Add free item	
@@ -175,7 +176,7 @@ module GameHelper
 		p.income = 15
 		p.number = 9
 		p.starting_bid = 120
-		p.bonus_text = "Corp. may place 1 free Claim within range.  Player receives one 10% TSI Share."
+		p.bonus_text = "Corporation which buys this private company (after Phase I) may place 1 free Claim within range.  Player receives one 10% TSI Share."
 		p.save
 		
 			# Add free item	
@@ -191,7 +192,7 @@ module GameHelper
 		p.income = 20
 		p.number = 10
 		p.starting_bid = 180
-		p.bonus_text = "Flies Probe if TSI is inactive.  Remove SEC certificate after TSI Corp buys a ship.  Player receives TSI's 20% President share"
+		p.bonus_text = "Flies Probe if TSI is inactive.  Remove SEC certificate after TSI Corp buys a ship.  Player receives TSI's 20% President share."
 		p.sell_to_corp = false
 		p.save				
 		
@@ -205,14 +206,12 @@ module GameHelper
 		p.income = 30
 		p.number = 11
 		p.starting_bid = 180
-		p.bonus_text = "May start Asteroid League in Phase III; must start it in Phase IV.  Remove AEC certificate after AL acquires a spaceship.  Player receives AL's 20% President share"
+		p.bonus_text = "May start Asteroid League in Phase III; must start it in Phase IV.  Remove AEC certificate after AL acquires a spaceship.  Player receives AL's 20% President share."
 		p.sell_to_corp = false
 		p.save				
 		
 			#add TSI 20% pres share
-			p.share = ai_pres_share
-			
-						
+			p.share = ai_pres_share					
 	end
 
 end

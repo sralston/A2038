@@ -1,11 +1,12 @@
 class GameController < ApplicationController
 
 	def start
-		#start the game!!
+		#start the game -- Initial Bidding Round!!!
 		@player = this_player
 		@game = @player.game
-		@privs = @game.private_companies.order('private_companies.number ASC')
-		@inds = @game.independent_companies.order('independent_companies.number ASC')
+		@companies = Array.new
+		@companies.concat(@game.private_companies).concat(@game.independent_companies)
+		@companies = @companies.sort_by { |c| c.number }
 	end
 	
 	def init

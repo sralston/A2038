@@ -22,10 +22,10 @@ class Event < ActiveRecord::Base
 	
 	end
 	
-	def self.all_in(player)
+	def self.all_in(player, url)
 		event = player.game.events.build
-		event.code = "ALL_IN"
-		event.text = "All players logged in...let's start!"
+		event.code = "LOGIN_ALL_IN"
+		event.text = url
 		event.regarding = "Player"
 		event.save
 	end

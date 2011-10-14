@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+respond_to :html, :js
 	
 	def create
 		customer = Customer.authenticate(params[:session][:username], params[:session][:password])
@@ -21,7 +22,7 @@ class SessionsController < ApplicationController
 					redirect_to :root
 				else
 					sign_in player  #includes setting the activated? flag
-					redirect_to login_logged_in_path
+					redirect_to login_logged_in_path(:format=>:js), 
 				end
 			end
 		end

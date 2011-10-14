@@ -11,4 +11,5 @@ class Game < ActiveRecord::Base
 	has_many	:events
 	#has_many	:locations
 	has_many 	:shares, :as => :stock_owner
+	#has_many	:ships, :as => :ship_owner
 end

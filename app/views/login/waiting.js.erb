@@ -1,0 +1,6 @@
+$("#login_area").fadeOut('fast', function() {
+	lastEventNum = <%= @last_event_num %>;
+	$(this).css({'width':'600px','height':'320px','top':'260px','margin-left':'-300px'});
+	$(this).html("<%= escape_javascript(render(:partial=>'waiting', :object => @players)) %>").fadeIn('fast', function() { });
+	$.requestLoginUpdate();
+});

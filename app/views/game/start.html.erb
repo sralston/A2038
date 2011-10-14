@@ -1,73 +1,186 @@
-	<div class="bidding" id="<%= @privs[0].number %>" style="top: 60px; left: 500px;">
+<%= stylesheet_link_tag "init_bidding" %>
+
+<script language=javascript>
+	var currentSelectCo = null;
+	var cash_held = <%= @player.cash_held %>;
+	var bid_increment = 5;
+	var currentPlayer = <%= @player == @game.first_player ? "true" : "false" %>
+
+<% buy_found = false %>
+<% s = "var coStatus = [" %>
+<% @companies.each do |co| %>
+
+	<% if (co.status == "BOUGHT") %>
+	 	<% s+= "'BOT'" %>
+	<% elsif (!co.bids.empty?) %>
+	 	<% s+= "'BID_" + co.bids.last.bid_amount.to_s + "'" %>
+	<% elsif (!buy_found) %>
+	 	<%  s+= "'BUY_" + co.starting_bid.to_s + "'" %>
+		<% buy_found = true %>
+	<% else %>
+	 	<% s+= "'NOB_" + co.starting_bid.to_s + "'" %>
+	<% end %>	
+	<% s+= "," %>
+<% end %>
+<% s = s[0..s.length-2] %>
+<% s+= "];" %>
+<%= s %>
+
+	(function( $ ) {
+
+		$.fn.biddingOperator = function() {
+			return this.each(function () {
+				$(this).click(function() {
+					if (currentSelectCo != null) {
+						$("#co_text_"+currentSelectCo).fadeOut('slow', function () { } ).css("display","none")
+					}
+					var coNum = $(this).attr("id");
+					coNum = coNum.slice(coNum.indexOf("_")+1);
+					var coCase = coStatus[coNum].slice(0,3);
+
+					if (currentPlayer) {
+						switch (coCase) {
+							case 'BID':
+								$("#bid_button").css("display","inline");
+								$("#buy_button").css("display","none");
+								break;
+							case 'BUY':
+								$("#buy_button").css("display","inline");
+								$("#bid_button").css("display","none");
+								break;
+							case 'BOT':
+								$("#buy_button").css("display","none");
+								$("#bid_button").css("display","none");
+								break;
+							case 'NOB':
+								$("#bid_button").css("display","inline");
+								$("#buy_button").css("display","none");						
+								break;
+						}
+					}
+					
+					currentSelectCo = coNum;
+					$("#co_text_"+currentSelectCo).fadeIn('slow', function () { }).css("display", "block");
+					
+				});
+			});
+		};
+	})(jQuery);
+	
+	(function ( $ ) {
+	
+		$.fn.highLightCoNumbers = function() {
+			return this.each(function () {
+				$(this).mouseover(function () {
+					$(this).css({"box-shadow":"0px 0px 3px 5px #f3e852", "background-color":"#334c84", "color":"#f3e852"});
+				}).mouseleave(function() {
+					$(this).css({"box-shadow":"2px 2px 3px black", "background-color":"#c4c4c4","color":"black"});
+				});
+			});
+		};
+	
+	})(jQuery);	
 		
-		<div class="bidding_name_line">
-			<div class="bidding_number">
-				<%= @privs[0].number %>
-			</div>
-			<div class="bidding_name">
-				<table style="height: 100%; width: 100%; vertical-align: middle;"><tr><td><%= @privs[0].name %> (<%= @privs[0].abbreviation %>)</td></tr></table>
-			</div>
-		</div>
-			
-		<div class="bidding_second_line">
-			<table style="height:100%;vertical-align:middle; width: 100%"><tr><td>Income: *<%= @privs[0].income %></td></tr></table>
-		</div>
-		
-		<div class="bidding_third_line">
-			<table style="height:100%;vertical-align:middle; width: 100%;"><tr><td><button type="button">Bid</button>&nbsp&nbsp<input type="number" size=4 value="<%= @privs[0].starting_bid %>" />&nbsp&nbsp<button type="button" disabled="disabled">Buy</button></td></tr></table>
+	$(document).ready(function() {
+		$(".init_bidding_co_number").biddingOperator();
+		$(".init_bidding_co_number").highLightCoNumbers();
+		// <%= @player == @game.first_player ? "$.requestInitBiddingUpdate();" : "" %>'
+		// lastEvent_num = <%= @last_event_num %>
+	});
+	
+</script>
+
+<div class="main_wrapper">
+
+	<div class="init_bidding_title">Initial Bidding Round for Private & Indepedent Companies</div>
+	
+	<div class="upper_wrapper">
+		<div class="init_bidding_co_title" style="padding-left: 10px; text-align: left;">
+			Private Companies
+		</div>		
+
+		<div class="top_line_button_box">	
+			<input type="button" id="bid_button" value="Bid" class="init_bidding_button">
+			<input type="button" id="buy_button" value="Buy" class="init_bidding_button">
+		</div>	
+
+		<div class="init_bidding_co_title" style="padding-right: 10px;  text-align: right;">
+			Independent Companies
 		</div>
 	</div>
+	
+	<div class="middle_wrapper">
+		<div class="init_bidding_co_number_wrapper">
+		<% privs = Array.new %>
+		<% @companies.each { |co| privs << co unless co.class.to_s != "PrivateCompany" } %>
+		<% body_buy_found = false %>	
+		<% privs.each do |co| %>
+			<div id="co_<%= co.number %>" class="init_bidding_co_number"><%= co.number %>
+			<% if (co.status == "BOUGHT") %>
+	 			<%= render :partial=>'game/bought_flag_left', :locals => { :co=>co } %>
+			<% elsif (!co.bids.empty?) %>
+			 	<%= render :partial=>'game/bid_flag_left', :locals => { :co=>co } %>
+			<% elsif (!body_buy_found) %>
+	 			<%= render :partial=>'game/buy_flag_left', :locals => { :co=>co } %>
+				<% body_buy_found = true %>		
+			<% end %>
+			</div>	
+		<% end %>	
+		</div>
+		
+		<div class="init_bidding_inner_info">
+			<% @companies.each do |company| %>
 
-	
-	<% @inds.each do |ind| %>
-	
-	<div class="bidding" id="<%= ind.number %>" style="top: 300px; left: <%= (ind.number-1) * 200 %>px;">
-		
-		<div class="bidding_name_line">
-			<div class="bidding_number">
-				<%= ind.number %>
-			</div>
-			<div class="bidding_name">
-				<table style="height:100%; width: 100%; vertical-align:middle;"><tr><td><%= ind.name %> (<%= ind.abbreviation %>)</td></tr></table>
-			</div>
-		</div>
+				<%= render :partial=>'game/init_companies', :locals => { :company=>company } %>
 			
-		<div class="bidding_second_line">
-			<table style="height:100%;vertical-align:middle;width:100%;"><tr><td><%= (ind.income != 0) ? "Income: *" + ind.income.to_s + "; " : "" %><%= ind.bonus_text %></td></tr></table>
+			<% end %>
 		</div>
 		
-		<div class="bidding_third_line">
-			<table style="height:100%;vertical-align:middle; width: 100%;"><tr><td><button type="button">Bid</button>&nbsp&nbsp<input type="number" size=4 value="100" />&nbsp&nbsp<button type="button" disabled="disabled">Buy</button></td></tr></table>
+		<div class="init_bidding_co_number_wrapper">
+		<% inds = Array.new %>
+		<% @companies.each { |co| inds << co unless co.class.to_s != "IndependentCompany" } %>	
+		<% inds.each do |co| %>
+			<div id="co_<%= co.number %>" class="init_bidding_co_number"><%= co.number %>
+			<% if (co.status == "BOUGHT") %>
+	 			<%= render :partial=>'game/bought_flag_right', :locals => { :co=>co } %>
+			<% elsif (!co.bids.empty?) %>
+			 	<%= render :partial=>'game/bid_flag_right', :locals => { :co=>co } %>
+			<% elsif (!body_buy_found) %>
+	 			<%= render :partial=>'game/buy_flag_right', :locals => { :co=>co } %>
+				<% body_buy_found = true %>		
+			<% end %>
+			</div>	
+		<% end %>
 		</div>
 	</div>
 	
-	<% end %>
-
-	
-	<% @privs = @privs.drop(1) %>
-	<% @privs.each_index do |priv| %>
-
-	<div class="bidding" id="<%= @privs[priv].number %>" style ="top: 550px; left: <%= priv * 200 + 100 %>px;">
-		
-		<div class="bidding_name_line">
-			<div class="bidding_number">
-				<%= @privs[priv].number %>
-			</div>
-			<div class="bidding_name">
-				<table style="height:100%;vertical-align:middle; width: 100%;"><tr><td><%= @privs[priv].name %> (<%= @privs[priv].abbreviation %>)</td></tr></table>
-			</div>
-		</div>
-			
-		<div class="bidding_second_line">
-			<table style="height:100%;vertical-align:middle;width:100%"><tr><td>Income: *<%= @privs[priv].income %>;&nbsp&nbsp<%= @privs[priv].bonus_text %></td></tr></table>
+	<div class="bottom_line_wrapper">
+		<div class="bottom_line_title" style="padding-left: 10px; text-align: left;">
+			Player Information	
 		</div>
 		
-		<div class="bidding_third_line">
-			<table style="height:100%;vertical-align:middle; width:100%"><tr><td><button type="button">Bid</button>&nbsp&nbsp<input type="number" size=4 value="<%= @privs[priv].starting_bid %>" />&nbsp&nbsp<button type="button" disabled="disabled">Buy</button></td></tr></table>
+		<div class="bottom_line_pass_box">
+			<input type="button" <%= @player == @game.first_player ? "style='display:inline;'" : "" %> id="pass_button" value="Pass" class="init_bidding_button">
+		</div>
+
+		<div class="bottom_line_title" style="padding-right: 10px; text-align: right;">
+			Events Log	
 		</div>
 	</div>
 	
+	<div class="bottom_wrapper">
+		<div class="player_info_wrapper">
+			<table class="player_info">
+				<% @game.players.each do |player| %>
+			
+					<%= render :partial=>'game/init_players', :locals => { :player=>player, :first_player=>@game.first_player } %>	
+				<% end %>
+			</table>
+		</div>
+		
+		<div class="event_wrapper">
+			<div class="event_info">testing..."</div>
+		</div>
+	</div>
 	
-	<% end %>
-
-
+</div>

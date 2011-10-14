@@ -1,0 +1,9 @@
+<tr>
+	<td id="player<%= player.player_number %>" class="waiting_player_num" style="background-color: <%= player.activated? ? "#3e6a4b" : "#a83b46" %>;">
+		<%= player.player_number %>
+	</td>
+	
+	<td style="padding-left: 5px;">
+		<%= player.customer.username %>
+	</td>
+</tr>

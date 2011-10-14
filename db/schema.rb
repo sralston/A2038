@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111002122303) do
+ActiveRecord::Schema.define(:version => 20111013232114) do
 
   create_table "bids", :force => true do |t|
     t.integer  "player_id"
@@ -125,6 +125,8 @@ ActiveRecord::Schema.define(:version => 20111002122303) do
     t.string   "bonus_text"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "starting_bid",                    :default => 100
+    t.integer  "bought_for"
   end
 
   add_index "independent_companies", ["abbreviation"], :name => "index_independent_companies_on_abbreviation"
@@ -162,6 +164,7 @@ ActiveRecord::Schema.define(:version => 20111002122303) do
     t.string   "string"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "bought_for"
   end
 
   add_index "private_companies", ["abbreviation"], :name => "index_private_companies_on_abbreviation"

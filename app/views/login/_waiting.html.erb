@@ -1,0 +1,33 @@
+<div id="waiting_no_updates" class="login_area_title">Waiting for other players...</div>
+
+<div class="waiting_players_area">
+	<table class="login_area_section_center">
+		<% @players.each do |player| %>
+			<%= render :partial=>'login/player', :locals => { :player => player }%>
+			<% # :locals => { :player => player } same as :object=>player %>
+		<% end %> 
+	</table>
+</div>
+
+<div class="waiting_messages_area">
+	Links to the rules<br />
+	<table>
+		<tr>
+			<td style="text-align: right;">Game Type:&nbsp&nbsp</td>
+			<td style="text-align: left;"><%= this_player.game.long_game ? "Long" : "Short" %></td>
+		</tr>
+		
+		<tr>
+			<td style="text-align: right;">Number of Players:&nbsp&nbsp</td>
+			<td style="text-align: left;"><%= this_player.game.num_players %></td>
+		</tr>
+		
+		<tr>
+			<td style="text-align: right;">Game Code:&nbsp&nbsp</td>
+			<td style="text-align: left;"><%= this_player.game.game_code %></td>
+		</tr>		
+	</table>
+	<%= button_to "Logout", session_path(this_player), :method=>:delete %>
+	Ping Server:&nbsp<button id="stopUpdateButton" onclick="$.stopUpdateButton();">stop</button>
+	<button id="startUpdateButton" disabled="disabled" onclick="$.startUpdateButton();">start</button>
+</div>

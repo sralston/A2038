@@ -1,0 +1,17 @@
+<div class="bidding_flag_wrapper_right">
+	<div class="bidding_flag_text_area_right">
+		<div class="bidding_flag_text_title_right">Bid</div>
+		<div class="bidding_flag_text_right">
+			<% s = "*" + co.bids.last.bid_amount.to_s +"-" %>
+			<% co.bids.each do |bid| %>
+				<% s += bid.player.player_number + "," %>
+			<% end %>
+			<% s = s[0..s.length-2] %>		
+			<%= s %>
+		</div>
+	</div>
+	<div class="bidding_flag_handle_wrapper_right">
+		<div class="bidding_flag_handle_right"></div>
+		<div class="bidding_flag_no_handle_right"></div>
+	</div>				
+</div>

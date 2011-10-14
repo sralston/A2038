@@ -1,0 +1,5 @@
+<tr>
+	<td><%= player.player_number.to_s + "-"+player.customer.username %></td>
+	<td id="player_x_cash">*<%= player.cash_held %></td>
+	<td id="player_x_current" class="current_player"><%= first_player == player ? "<< Current Player" : "" %></td>
+</tr>

@@ -1,0 +1,12 @@
+<div class="bought_flag_wrapper_right">
+	<div class="bought_flag_text_area_right">
+		Bought-
+		<% s = co.class.to_s %>
+		<%= s == "IndependentCompany" ? co.ind_co_owner.player_number : co.priv_co_owner.player_number %>
+		: *<%= co.bought_for.to_s %>
+	</div>
+	<div class="bought_flag_handle_wrapper_right">
+		<div class="bought_flag_handle_right"></div>
+		<div class="bought_flag_no_handle_right"></div>
+	</div>				
+</div>	

@@ -1,0 +1,54 @@
+$.<%= e.code == "LOGIN_PLAYER" ? "login" : "logout" %>(<%= e.value %>, "<%= e.text %>", <%= e.id %>);
+	$.event_test(<%= e.code %>, <%= e.value %> ,<%= e.text %>, <%= e.id %>);
+	
+	
+$.alert("<%= c.to_s + "," + v.to_s + "," + t.to_s + "," + i.to_s %>");
+$.test_me(<%= c.to_s + "," + v.to_s + "," + t.to_s + "," + i.to_s %>);
+
+
+<% c = Array.new %>
+<% v = Array.new %>
+<% t = Array.new %>
+<% i = Array.new %>
+
+<% @events.each do |e| %>
+
+	c << e.code
+	v << e.value
+	t << e.text
+	i << e.id
+
+<% end %>
+
+<% test = c.to_s %>
+
+
+	jQuery.requestLoginUpdate = function () {
+
+		interval = setInterval(function() {
+			$.get('<%= login_update_path %>',
+				{ last_event_num : lastEventNum },
+				function(d) {
+				alert("d.len"+d.length);
+					//do stuff when receive back in JSON
+					interval=window.clearInterval(interval); // pause the request for updates.
+					for (var x = 0, len = d.length; x < len; x++) {
+					
+						switch(d[x].event.code) {
+							case 'LOGIN':
+								$.login(d[x].event.value, d[x].event.text);
+								break;
+							case 'NO_UPDATE':
+								$.no_updates();
+								break;
+						}
+					}
+					lastEventNum = d[d.length-1].event.id;
+					$.requestLoginUpdate();
+				}, "json"
+			);
+		}, ping_time);
+	};
+	
+	
+

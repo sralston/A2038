@@ -4,37 +4,43 @@
 	
 	$(document).ready(function() {
 		$.inputHighlight("#f7e944");
+		
+		$(".login_button").mouseover(function () {
+			$(this).css("box-shadow","0px 0px 30px 10px #334c84");
+		}).mouseleave(function() {
+			$(this).css("box-shadow","0 0 0");
+		});
 	});
 	
 </script>
 
 <div class="main_screen">
 	
-	<div class="login_area">
+	<div id="login_area">
 		<div class="login_area_title">Please Log In:</div>
 
-			<%= form_for(:session, :url=> sessions_path, :html=> { :id =>"login_form" } ) do |f| %>
+			<%= form_for(:session, :url=> sessions_path, :html=> { :id =>"login_form" }, :remote=>true ) do |f| %>
 
-		<table class="login_area_form">
+		<table class="login_area_section_center">
 			<tr>
-				<td class="login_area_input_name">Username:&nbsp</td>
+				<td class="login_area_text">Username:&nbsp</td>
 				<td><%= f.text_field :username, :size=>15, :class=>"login_input" %></td>
 			</tr>
 			
 			<tr>
-				<td class="login_area_input_name">Password:&nbsp</td>
+				<td class="login_area_text">Password:&nbsp</td>
 				<td><%= f.password_field :password, :size=>15, :class=>"login_input" %></td>
 			</tr>	
 			
 			<tr>
-				<td class="login_area_input_name">Gamecode:&nbsp</td>
+				<td class="login_area_text">Gamecode:&nbsp</td>
 				<td><%= f.text_field :gamecode, :size=>15, :class=>"login_input" %></td>
 			</tr>		
 		
 			</table>
 			
 			<div class="login_submit_line">
-				<a onClick="$('#login_form').submit()" onMouseOver="$('.login_submit').css('background-color','#334c84');" onMouseOut="$('.login_submit').css('background-color','black');" class="login_submit">Log In</a>
+				<%= image_submit_tag "login_button.jpg", :class=>"login_button" %>
 			</div>
 			
 			<% end %>
