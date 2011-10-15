@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111013232114) do
+ActiveRecord::Schema.define(:version => 20111014111946) do
 
   create_table "bids", :force => true do |t|
     t.integer  "player_id"
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(:version => 20111013232114) do
     t.string   "regarding",  :limit => 50
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "value2"
   end
 
   add_index "events", ["code"], :name => "index_events_on_code"

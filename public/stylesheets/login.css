@@ -65,16 +65,17 @@ body {
 }
 
 .login_input {
-	background-color: #c4c4c4;
+	background-color: #5a5a5a;
 	font-family: arial, sans-serif;
 	font-size: 16px;
 	text-align: left;
-	color: #334c84;
+	color: #f3e852;
 	font-weight: normal;
 	line-height: 20px;
 	vertical-align: middle;
 	margin-top: 5px;
 	margin-bottom: 5px;
+	padding-left: 6px;
 	border: 4px solid black;
 	-mox-border-radius: 4px;
 	-webkit-border-radius: 4px;

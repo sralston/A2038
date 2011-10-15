@@ -1,15 +1,16 @@
 
-<div id="co_text_<%= company.number %>" class="co_info_wrapper">
+<div id="co_text_<%= co.number %>" class="co_info_wrapper">
 	<div class="co_title_line">
-		<div class="co_title_num"><%= company.number %></div>
-		<div class="co_title_name"><%= company.name %> (<%= company.abbreviation %>)</div>
+		<div class="co_title_num"><%= co.number %></div>
+		<div class="co_title_name" id="co_title_name_<%= co.number %>"><%= co.name %> (<%= co.abbreviation %>)</div>
 	</div>
-				
+	
+	
 	<div class="co_text_box">
 		<span style="font-style: italic">
-			Initial Bid:  *<%= company.starting_bid %>
-			<%= (i = company.income) != 0 ? " / Income per OR: *"+i.to_s : "" %>
+			Initial Bid:  *<%= co.starting_bid %>
+			<%= (i = co.income) != 0 ? " / Income per OR: *"+i.to_s : "" %>
 		</span><br /><br />
-			<%= company.bonus_text %>
-		</div>
+		<%= co.bonus_text %>
 	</div>
+</div>

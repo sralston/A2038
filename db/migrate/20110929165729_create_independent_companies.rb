@@ -20,6 +20,7 @@ class CreateIndependentCompanies < ActiveRecord::Migration
     add_index		:independent_companies, :name
     add_index		:independent_companies, :abbreviation
     add_index		:independent_companies, [:ind_co_owner_id, :ind_co_owner_type], :name=>"ind_co_indx"
+    add_index		:independent_companies, :number
   end
 
   def self.down

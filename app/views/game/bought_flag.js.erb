@@ -1,0 +1,5 @@
+<% if(@right) %>
+	$('#co_<%= @company.number%>').append('<%= escape_javascript(render(:partial=>'bought_flag_right', :object => @company, :as=>:co )); %>');
+<% else %>
+	$('#co_<%= @company.number%>').append('<%= escape_javascript(render(:partial=>'bought_flag_left', :object => @company, :as=>:co )); %>');
+<% end %>

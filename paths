@@ -3,6 +3,9 @@
 login_logged_in GET    /login/logged_in(.:format)    {:controller=>"login", :action=>"logged_in"}
    login_update GET    /login/update(.:format)       {:controller=>"login", :action=>"update"}
      game_start GET    /game/start(.:format)         {:controller=>"game", :action=>"start"}
+      game_init GET    /game/init(.:format)          {:controller=>"game", :action=>"init"}
+       game_buy POST   /game/buy(.:format)           {:controller=>"game", :action=>"buy"}
+  login_testing GET    /login/testing(.:format)      {:controller=>"login", :action=>"testing"}
        sessions POST   /sessions(.:format)           {:action=>"create", :controller=>"sessions"}
         session DELETE /sessions/:id(.:format)       {:action=>"destroy", :controller=>"sessions"}
          signup        /signup(.:format)             {:controller=>"customers", :action=>"new"}
@@ -29,4 +32,18 @@ login_logged_in GET    /login/logged_in(.:format)    {:controller=>"login", :act
            game GET    /games/:id(.:format)          {:action=>"show", :controller=>"games"}
                 PUT    /games/:id(.:format)          {:action=>"update", :controller=>"games"}
                 DELETE /games/:id(.:format)          {:action=>"destroy", :controller=>"games"}
+         events GET    /events(.:format)             {:action=>"index", :controller=>"events"}
+                POST   /events(.:format)             {:action=>"create", :controller=>"events"}
+      new_event GET    /events/new(.:format)         {:action=>"new", :controller=>"events"}
+     edit_event GET    /events/:id/edit(.:format)    {:action=>"edit", :controller=>"events"}
+          event GET    /events/:id(.:format)         {:action=>"show", :controller=>"events"}
+                PUT    /events/:id(.:format)         {:action=>"update", :controller=>"events"}
+                DELETE /events/:id(.:format)         {:action=>"destroy", :controller=>"events"}
+         shares GET    /shares(.:format)             {:action=>"index", :controller=>"shares"}
+                POST   /shares(.:format)             {:action=>"create", :controller=>"shares"}
+      new_share GET    /shares/new(.:format)         {:action=>"new", :controller=>"shares"}
+     edit_share GET    /shares/:id/edit(.:format)    {:action=>"edit", :controller=>"shares"}
+          share GET    /shares/:id(.:format)         {:action=>"show", :controller=>"shares"}
+                PUT    /shares/:id(.:format)         {:action=>"update", :controller=>"shares"}
+                DELETE /shares/:id(.:format)         {:action=>"destroy", :controller=>"shares"}
            root        /(.:format)                   {:controller=>"login", :action=>"index"}

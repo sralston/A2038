@@ -20,10 +20,10 @@
 	jQuery.inputHighlight = function(color) {
 		$(".login_input").each(function() {
 			$(this).focus(function() {
-				$(this).css({"background" : color, "border" : "4px solid #334c84"});
+				$(this).css({"background" : color, "border" : "4px solid #5a5a5a"});
 			});
 			$(this).blur(function() {
-				$(this).css({"background" : "#c4c4c4", "border" : "4px solid black" });
+				$(this).css({"background" : "#5a5a5a", "border" : "4px solid black" });
 			});
 		});
 	}

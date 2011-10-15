@@ -1,5 +1,10 @@
-<tr>
-	<td><%= player.player_number.to_s + "-"+player.customer.username %></td>
-	<td id="player_x_cash">*<%= player.cash_held %></td>
-	<td id="player_x_current" class="current_player"><%= first_player == player ? "<< Current Player" : "" %></td>
-</tr>
+<div class="other_player_info_line">
+	<div class="other_player_info_line_current_player" style="display:<%= player == first_player ? "block" : "none" %>;">
+		>>
+	</div>	
+	
+	<div class="other_player_info_line_text" style="background-color: rgba(<%= index.odd? ? "196,196,196" : "138,161,196" %>,0.8);<%= index==0 ? " border-top-width:2px; height: 31px;" : "" %><%= index==last ? " border-bottom-width: 2px; height: 31px;" : "" %>">
+		<%= player.player_number %>) <%= player.customer.username %>
+		<span style="float: right; color: #3e6a4b; font-weight: bold;">*<%= player.cash_held %></span>
+	</div>
+</div>

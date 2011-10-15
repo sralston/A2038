@@ -1,40 +1,121 @@
-<html>
-
-<head>
-
 <script>
 
-	function test1(a, b) {
-	
-		if (typeof b === 'function') {
-			b();
-		}
-		
-		alert("1a: this should fire second");
-	}
-
-	function test2() {
-		alert("2b: this should fire first!");
-	}
-	
-	$(document).ready(function () {
-	
-/*		test1('', function() {
-			
-			test2();
-			
-		}); */
-	
-		test1('', test2());
-	
-	
+	$(function() {
+		$('.quickflip-wrapper').quickFlip();
 	});
 
 </script>
 
-</head>
-<body>
-testing...
-</body>
+<style>
 
-</html>
+.quickflip-wrapper {
+	height: 80px;
+	width: 160px;
+	margin: 20px;
+	position: relative;
+}
+
+#back {
+	background-color: yellow;
+	border: 5px solid blue;
+	position: absolute;
+		height: 80px;
+	width: 160px;
+}
+
+#front {
+	background-color: pink;
+	border: 5px solid black;
+		position: absolute;
+			height: 80px;
+	width: 160px;
+}
+
+#back2 {
+	background-color: grey;
+	border: 5px solid blue;
+		position: absolute;
+			height: 80px;
+	width: 160px;
+}
+
+#front2 {
+	background-color: green;
+	border: 5px solid black;
+		position: absolute;
+			height: 80px;
+	width: 160px;
+}
+
+#back3 {
+	background-color: silver;
+	border: 5px solid blue;
+		position: absolute;
+				height: 80px;
+	width: 160px;
+}
+
+#front3 {
+	background-color: red;
+	border: 5px solid black;
+		position: absolute;
+					height: 80px;
+	width: 160px;
+}
+
+#back4 {
+	background-color: blue;
+	border: 5px solid blue;
+		position: absolute;
+					height: 80px;
+	width: 160px;
+}
+
+#front4 {
+	background-color: green;
+	border: 5px solid black;
+		position: absolute;
+					height: 80px;
+	width: 160px;
+}
+
+</style>
+
+<div id="quickflip-wrapper1" class="quickflip-wrapper">
+
+	<div class="quickFlipCta"><div id="front">font</div></div>
+	
+	<div class="quickFlipCta"><div id="back">bac</div></div>
+	
+</div>
+
+<div id="quickflip-wrapper2" class="quickflip-wrapper">
+
+	<div id="front2" class="quickFlipCta">font</div>
+	
+	<div id="back2" class="quickFlipCta">bac</div>
+	
+</div>
+
+<div id="quickflip-wrapper3" class="quickflip-wrapper">
+
+	<div id="front3" class="quickFlipCta">font</div>
+	
+	<div id="back3" class="quickFlipCta">bac</div>
+	
+</div>
+
+<div id="quickflip-wrapper4" class="quickflip-wrapper">
+
+	<div id="front4" class="quickFlipCta">font</div>
+	
+	<div id="back4" class="quickFlipCta">bac</div>
+	
+</div>
+
+<br /><br /><br />
+
+<button onClick="$('#quickflip-wrapper1').quickFlipper()">test</button>
+<button onClick="$('#quickflip-wrapper2').quickFlipper()">test2</button>
+<button onClick="$('#quickflip-wrapper3').quickFlipper()">test3</button>
+<button onClick="$('#quickflip-wrapper4').quickFlipper()">test4</button>

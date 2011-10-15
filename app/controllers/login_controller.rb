@@ -7,7 +7,7 @@ respond_to :html, :js
 	
 	def waiting
 		@players = this_player.game.players.order("player_number ASC")
-		@last_event_num = this_player.game.events.where(:code => "LOGIN_PLAYER").last.id
+		@last_event_num = this_player.game.events.where("code LIKE ?", "LOG%").last.id
 		@title = "Waiting for other player(s)..."
   		respond_to do |format|
   			format.js
@@ -33,7 +33,9 @@ respond_to :html, :js
 	
 	def update
 		@last_event_num = params[:last_event_num]
-		@events = this_player.game.events.select("id, code, text, value").where("id > ?",@last_event_num).where("code LIKE ?","LOG%").order("id ASC")
+		@events = this_player.game.events.select("id, code, text, value, value2").where("id > ?",@last_event_num).where("code LIKE ?","LOG%").order("id ASC")
+		
+		#add a check here just in case there is a miss between the last player logging in and this player (so they won't just sit there like a twit)
 			
 		if (@events.count == 0)
 			noEvent = Event.new

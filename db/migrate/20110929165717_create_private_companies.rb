@@ -17,6 +17,7 @@ class CreatePrivateCompanies < ActiveRecord::Migration
     	add_index :private_companies, [:priv_co_owner_id, :priv_co_owner_type], :name=>"priv_co_indx"
     	add_index :private_companies, :name
     	add_index :private_companies, :abbreviation
+    	add_index :private_companies, :number
   end
 
   def self.down
