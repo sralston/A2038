@@ -6,8 +6,8 @@ class CreateGames < ActiveRecord::Migration
 		t.integer	:bank_amount, :default => 10000, :null => false
 		t.string	:current_state, :default => "NEW", :null => false
 		t.integer	:num_players, :default => 4
-		t.integer	:round, :default => 1
-		t.integer	:operating_round, :default => 1
+		t.integer	:round, :default => 0
+		t.integer	:operating_round, :default => 0
 
 		t.integer 	:first_player_id, :null => true
 		t.integer	:current_player_id, :null => true

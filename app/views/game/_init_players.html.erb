@@ -1,10 +1,14 @@
-<div class="other_player_info_line">
-	<div class="other_player_info_line_current_player" style="display:<%= player == first_player ? "block" : "none" %>;">
-		>>
+<div class="other_player_info_line" id="other_player_info_line_<%= player.player_number %>">
+	<div class="other_player_info_line_current_player" id="current_player_<%= player.player_number %>" style="display:<%= (player == first_player || player.previous_pass) ? "block" : "none" %>;">
+		<% if (player == @game.first_player) %>
+			&gt;&gt;
+		<% elsif player.previous_pass %>
+			P
+		<% end %>
 	</div>	
 	
-	<div class="other_player_info_line_text" style="background-color: rgba(<%= index.odd? ? "196,196,196" : "138,161,196" %>,0.8);<%= index==0 ? " border-top-width:2px; height: 31px;" : "" %><%= index==last ? " border-bottom-width: 2px; height: 31px;" : "" %>">
+	<div class="other_player_info_line_text" style="background-color: rgba(<%= index.odd? ? "196,196,196" : "138,161,196" %>,0.8);<%= index==0 ? " border-top-width:2px; height: 29px;" : "" %><%= index==last ? " border-bottom-width: 2px; height: 29px;" : "" %>">
 		<%= player.player_number %>) <%= player.customer.username %>
-		<span style="float: right; color: #3e6a4b; font-weight: bold;">*<%= player.cash_held %></span>
+		<span style="float: right; color: #3e6a4b; font-weight: bold;">*<span id="player_cash_held_<%= player.player_number %>"><%= player.cash_held %></span></span>
 	</div>
 </div>

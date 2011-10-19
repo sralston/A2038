@@ -1,13 +1,15 @@
 A2038::Application.routes.draw do
-	get "login/index"
-	get "login/waiting"
+	get "login/waiting" #change the logins to match??
 	get "login/logged_in"
 	get "login/update"
 	get	"game/start"
 	get "game/init"
 	post "game/buy"
+	post "game/pass"
+	post "game/bid"
 	get "game/update"
 	get "game/bought_flag"
+	get "game/bid_flag"
 	get "login/testing"
 	
 	resources	:sessions, :only => [:create, :destroy]
@@ -15,6 +17,7 @@ A2038::Application.routes.draw do
 	match 	'/signup',	:to => 'customers#new'
 	match	'/signin',	:to => 'sessions#new'
 	match	'/signout',	:to => 'sessions#destroy'
+	match	'/game/operating_round', :to => 'game#operating_round'
 	
 	resources	:customers
 	resources	:players

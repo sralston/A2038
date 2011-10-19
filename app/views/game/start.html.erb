@@ -2,24 +2,32 @@
 
 <script language=javascript>
 	var currentSelectCo = null;
+	var currentOtherPlayerSelect = null;
 	var cashHeld = <%= @player.cash_held %>;
 	var bidIncrement = 5;
-	var currentPlayer = <%= @player == @game.first_player ? "true" : "false" %>
-	var playerNumber = <%= @player.id %>
+	var currentPlayer = <%= @player == @game.first_player ? "true" : "false" %>;
+	var playerNumber = <%= @player.player_number %>;
+	var lastEventNum = <%= @last_event_num %>;
+	var currentPlayerNum = <%= @game.first_player.id %>;
+	var buyWithSlidePrice = false;
 
 <% buy_found = false %>
+<% buy_number = -1 %>
 <% s = "var coStatus = [" %>
 <% @companies.each do |co| %>
 
 	<% if (co.status == "BOUGHT") %>
-	 	<% s+= "'BOT'" %>
+	 	<% s+= "'BOT;'" %>
 	<% elsif (!co.bids.empty?) %>
-	 	<% s+= "'BID_" + co.bids.last.bid_amount.to_s + "'" %>
+	 	<% s+= "'BID_" + co.bids.last.bid_amount.to_s %>
+	 	// if player has bid on this before, have 'true' (as binary) tacked on to end
+	 	<% co.players.include?(@player) ? s+= ";1'" : s+= ";0'" %>
 	<% elsif (!buy_found) %>
-	 	<%  s+= "'BUY_" + co.starting_bid.to_s + "'" %>
+	 	<%  s+= "'BUY_" + co.starting_bid.to_s + ";'" %>
 		<% buy_found = true %>
+		<% buy_number = co.number %>
 	<% else %>
-	 	<% s+= "'NOB_" + co.starting_bid.to_s + "'" %>
+	 	<% s+= "'NOB_" + co.starting_bid.to_s + ";'" %>
 	<% end %>	
 	<% s+= "," %>
 <% end %>
@@ -36,98 +44,193 @@
 						$("#co_text_"+currentSelectCo).fadeOut('slow', function () { } ).css("display","none")
 					}
 					var coNum = $(this).attr("id");
-					coNum = coNum.slice(coNum.indexOf("_")+1);
-					var coCase = coStatus[coNum].slice(0,3);
-					var minCost = coStatus[coNum].slice(4);
-					minCost = parseInt(minCost);
+					coNum = parseInt(coNum.slice(coNum.indexOf("_")+1));
 
 					if (currentPlayer) {
-						switch (coCase) {
-							case 'BID':
-								if (minCost <= cashHeld) {
-									// enough cash to bid on
-									$("#bid_buy_text").html("");
-									$("#bid_button").css("display","inline");
-									$("#buy_button").css("display","none");
-								} else {
-									// insufficient cash to bid on
-									$.bidbuyOff("Insufficient *");								
+						var coCase = coStatus[coNum].slice(0,3);
+						var minCost = parseInt(coStatus[coNum].slice(4, coStatus[coNum].indexOf(";")));
+
+						switch(coCase) {
+							case "BID":
+								if ((minCost+bidIncrement) <= cashHeld && !parseInt(coStatus[coNum].slice(coStatus[coNum].indexOf(";")+1))) {
+									// enough cash to bid on && haven't bid on it before by this player								
+									$("#bid_button").removeAttr("disabled").removeClass("init_bidding_button_disabled").addClass("init_bidding_button");
+									$("#buy_button").attr("disabled","disabled").removeClass("init_bidding_button").addClass("init_bidding_button_disabled");
+									$("#bidbuy_slider").slider({
+										disabled: false,
+										min: minCost+bidIncrement,
+										max: cashHeld,
+										value: minCost+bidIncrement
+									});	
+									$("#bidbuy_slider_amount").text(minCost+bidIncrement);
 								}
 								break;
-							case 'BUY':
+							case "BUY":
 								if (minCost <= cashHeld) {
-									$("#bid_buy_text").html("");									
-									$("#buy_button").css("display","inline");
-									$("#bid_button").css("display","none");
-								} else {
-									$.bidbuyOff("Insufficient *");
+									if (coNum == 0 || (7 <= coNum && coNum <= 11)) {
+									alert("coNum in priv : "+coNum);
+										$("#bidbuy_slider").slider({ disabled : true });
+										$("#bidbuy_slider_amount").text("Bid");
+										buyWithSliderPrice = false;
+									} else {								
+										$("#bidbuy_slider").slider({
+											disabled: false,
+											min: minCost,
+											max: cashHeld,
+											value: minCost
+										});
+										$("#bidbuy_slider_amount").text(minCost);
+										buyWithSliderPrice = true;
+									}						
+									$("#buy_button").removeAttr("disabled").removeClass("init_bidding_button_disabled").addClass("init_bidding_button");
+									$("#bid_button").attr("disabled","disabled").removeClass("init_bidding_button").addClass("init_bidding_button_disabled");							
 								}
 								break;
-							case 'BOT':
-								$.bidbuyOff("Bought");
+								
+							case "BOT": 
+								$.bidbuyOff();
+								$("#bidbuy_slider").slider({ disabled : true });
+								$("#bidbuy_slider_amount").text("Bid");
 								break;
-							case 'NOB':
+								
+							case "NOB":
 								if (minCost <= cashHeld) {
 									// enough cash to bid on
-									$("#bid_buy_text").html("");
-									$("#bid_button").css("display","inline");
-									$("#buy_button").css("display","none");
-								} else {
-									// insufficient cash to bid on
-									$.bidbuyOff("Insufficient *");								
-								}					
-								break;
+									$("#bid_button").removeAttr("disabled").removeClass("init_bidding_button_disabled").addClass("init_bidding_button");
+									$("#buy_button").attr("disabled","disabled").removeClass("init_bidding_button").addClass("init_bidding_button_disabled");
+									$("#bidbuy_slider").slider({
+										disabled: false,
+										min: minCost,
+										max: cashHeld,
+										value: minCost
+									});	
+									$("#bidbuy_slider_amount").text(minCost);
+								}
+								break;					
 						}
 					}
-					
 					currentSelectCo = coNum;
 					$("#co_text_"+currentSelectCo).fadeIn('slow', function () { }).css("display", "block");
-					
 				});
 			});
 		};
 	})(jQuery);
-	
+
+	$.updateSlider = function(v) {
+		$("#bidbuy_slider").slider( { value: v } );
+	};
+
 	(function ( $ ) {
-	
 		$.fn.highLightCoNumbers = function() {
 			return this.each(function () {
 				$(this).mouseover(function () {
-					$(this).css({"box-shadow":"0px 0px 3px 5px #f3e852", "background-color":"#334c84", "color":"#f3e852"});
+					$(this).css({"box-shadow":"0px 0px 3px 5px #f3e852"});
 				}).mouseleave(function() {
-					$(this).css({"box-shadow":"2px 2px 3px black", "background-color":"#c4c4c4","color":"black"});
+					$(this).css({"box-shadow":"2px 2px 4px black"});
 				});
 			});
 		};
-	
 	})(jQuery);	
-
-	jQuery.bidbuyOff = function (msg) {
-		$("#buy_button").css("display","none");
-		$("#bid_button").css("display","none");
-		$("#bid_buy_text").html(msg);
+	
+	jQuery.bidbuyOff = function () {
+		$("#buy_button").attr("disabled","disabled").removeClass("init_bidding_button").addClass("init_bidding_button_disabled");
+		$("#bid_button").attr("disabled","disabled").removeClass("init_bidding_button").addClass("init_bidding_button_disabled");
+	};
+	
+	jQuery.allButtonsOff = function () {
+		$.bidbuyOff();
+		$("#pass_button").attr("disabled","disabled").removeClass("init_bidding_button").addClass("init_bidding_button_disabled");;
+		$("#bidbuy_slider").slider( { disabled:true} );
+	};
+	
+	jQuery.newPlayer = function(playerNum) {
+		$("#current_player_"+playerNum).text(">>");
+		$("#current_player_"+playerNum).css("display","block");
+		
+		if (playerNumber == playerNum) {
+			currentPlayer = true;
+			$("#pass_button").removeAttr("disabled").removeClass("init_bidding_button_disabled").addClass("init_bidding_button");
+		} else {
+			currentPlayer = false;
+		}
+		
+		if ($("#current_player_"+currentPlayerNum).text() != "P") {
+			$("#current_player_"+currentPlayerNum).css("display","none");
+		}
+		currentPlayerNum = playerNum;
 	}
 	
+	jQuery.pass = function () {
+		$.allButtonsOff();
+		$("#pass_form").submit();
+	}
+	
+	jQuery.bid = function () {
+		var bidAmount = parseInt($("#bidbuy_slider_amount").text());
+		var confirmText = "Are you sure you want to bid "+$("#co_title_name_"+currentSelectCo).text()+" for *"+bidAmount+"?";
+		confirmText += "\n\nYou will have *"+(cashHeld-bidAmount)+" left if you proceed.";
+		var confirmResponse = confirm(confirmText);
+		if (confirmResponse) {
+			$.allButtonsOff();
+			$("#bid_co_num").val(currentSelectCo);
+			$("#bid_amount").val(bidAmount);
+			$("#bid_form").submit();
+		}
+	};
+	
 	jQuery.buyCo = function () {
-		var buyAmount = parseInt(coStatus[currentSelectCo].slice(4));
+		var buyAmount=0;
+		if (buyWithSliderPrice) {
+			buyAmount = parseInt($("#bidbuy_slider_amount").text());
+		} else {
+			buyAmount = parseInt(coStatus[currentSelectCo].slice(4));
+		}
 		var confirmText = "Are you sure you want to purchase "+$("#co_title_name_"+currentSelectCo).text()+" for *"+buyAmount+"?";
 		confirmText += "\n\nYou will have *"+(cashHeld-buyAmount)+" left if you proceed."
 		var confirmResponse = confirm(confirmText)
 		if (confirmResponse) {
-			cashHeld -= buyAmount;
+			$.allButtonsOff();
 			$("#buy_co_num").val(currentSelectCo);
 			$("#buy_amount").val(buyAmount);
 			$("#buy_form").submit();
 		} 
-	}
+	};
 	
-	jQuery.coBought = function(eventText, coNum, cost, playerNum) {
-		$(".event_wrapper").append("<div class='event_info'>"+eventText+"</div>");
-		var oldCash = parseInt($("#player_cash_"+playerNum).text().slice(1));
-		$("#player_cash_"+playerNum).html("*"+(oldCash-cost));
-		coStatus[coNum] = "BOT";
-		var valueString = "co_number="+coNum+"&player_num="+playerNum;
-		$("#co_"+coNum).remove(".flag_wrapper");
+	jQuery.addEventText = function (eventText, createdAt) {
+		dt = "2038"+createdAt.slice(4);
+		dt = dt.replace("T"," ").replace("Z","");
+		s = "<div class='event_line'>[" + dt + "] " + eventText + "</div>";
+		$("#event_text_box").append(s);
+	};
+	
+	jQuery.coBought = function(coNum, cost, playerNum) {
+		//update cash for the player who bought the co
+		var cash = parseInt($("#player_cash_held_"+playerNum).text());
+		cash = cash-cost;
+		$("#player_cash_held_"+playerNum).html(cash);
+		
+		//if the player who bought the co is THIS player, update cashHeld JS variable
+		if(playerNum == playerNumber) { cashHeld = cash; }
+		
+		//update the coStatus so that others can't buy this bought co
+		coStatus[coNum] = "BOT;";
+		
+		//update top-right section text
+		$("#co_text_info_"+coNum).html("<span style='color: #a83b46;'>Bought by Player " + playerNum + " for *" + cost+"</span>");
+		
+		//update the listing of bought companies for that player
+		var updateString = "<div>["+coNum+"] *"+cost+"</div>";
+
+		var noneString = $("#bought_text_"+playerNum).text();
+		if (noneString.indexOf("None") != -1) {
+			$("#bought_text_"+playerNum).html(updateString);
+		} else {
+			$("#bought_text_"+playerNum).append(updateString);
+		}
+		
+		//updating the top-left flag
+		$("#flag_"+coNum).remove();
+		var valueString = "co_number="+coNum;
 		//request bought flag from server via $.get
 	   $.ajax({
     	  type : 'GET',
@@ -135,36 +238,87 @@
     	  data : valueString,
    		  dataType : 'script'
    		});
-	}
+	};
+	
+	jQuery.coBidOn = function(coNum, amount, playerNum) {
+		//update cash for the player who bought the co
+		var cash = parseInt($("#player_cash_held_"+playerNum).text());
+		cash = cash-amount;
+		$("#player_cash_held_"+playerNum).html(cash);
+		
+		//if the player who bought the co is THIS player, update cashHeld JS variable
+		if(playerNum == playerNumber) { cashHeld = cash; }
+		
+		//update the coStatus to reflect the highest bid & disallow bidding player from bidding again
+		var flagExist = (coStatus[coNum].slice(0,3) == "NOB") ? false : true; // used to request flag if false
+		var bidStatus = (currentPlayer) ? "1" : coStatus[coNum].slice(coStatus[coNum].indexOf(";")+1);
+		coStatus[coNum] = "BID_" + amount + ";" + bidStatus;
+		
+		//update top-right section text
+		if (($("#co_text_info_"+coNum).text()).indexOf("Currently") != -1) { //meaning that 'currently' was found; start a fresh string
+			$("co_text_info_"+coNum).html("<span style='color:#f3e852;'>Bids: ("+playerNum+") *"+amount);
+		} else {
+			$("co_text_info_"+coNum).html($("#co_text_info_"+coNum).html()+"; ("+playerNum+") *"+amount);
+		}
+		
+		//update the listing of bid companies for that player
+		var updateString = "<div>["+coNum+"] *"+amount+"</div>";
+
+		var noneString = $("#bid_text_"+playerNum).text();
+		if (noneString.indexOf("None") != -1) {
+			$("#bid_text_"+playerNum).html(updateString);
+		} else {
+			$("#bid_text_"+playerNum).append(updateString);
+		}
+		
+		//updating the top-left flag if one doesn't exist already
+		if (!flagExist) {
+			$("#flag_"+coNum).remove();
+			var valueString = "co_number="+coNum;
+			//request bought flag from server via $.get
+			$.ajax({
+    		  type : 'GET',
+    		  url : '/game/bid_flag',
+ 	  	 	  data : valueString,
+   			  dataType : 'script'
+	   		});
+   		}
+	};
 	
 	jQuery.requestInitBidUpdate = function () {
-
+		interval=window.clearInterval(interval); // pause the request to handle updates.
 		$.get('/game/update',
 			{ last_event_num : lastEventNum },
 			function(data) {
 				//do stuff when receive back in JSON
-				interval=window.clearInterval(interval); // pause the request to handle updates.
 				$.each(data, function(x, events) {
 					$.each(events, function(y, event) {
+						if (event.code != "NO_UPDATE" && event.code != "ALL_PASS") { 
+							$.addEventText(event.text, event.created_at);
+						}
 						switch(event.code) {
-							case 'INITBID_BUY':
-								$.coBought(event.text, parseInt(event.regarding), parseInt(event.value), parseInt(event.value2));
+							case 'INITBID_BUY':	
+								$.coBought(parseInt(event.regarding), parseInt(event.value), parseInt(event.value2));
 								break;
 							case 'INITBID_BID':
-								//$.logout(event.value, event.text);
+								$.coBidOn(parseInt(event.regarding), parseInt(event.value), parseInt(event.value2));
 								break;
-							case 'INITBID_PASS':
-								//$.no_updates(event.text);
+							case 'PASS':
+								$("#current_player_"+currentPlayerNum).text("P");
+								$("#current_player_"+currentPlayerNum).css("display","block");
 								break;
-							case 'INITBID_NEW_PLAYER':
-								//$.redirect(event.text);
+							case 'NEW_PLAYER':
+								$.newPlayer(event.value);
+								break;
+							case 'ALL_PASS':
+								$.redirect(event.text);
 								break;
 						}  // end of switch
 					});
 				});
 				
 				lastEventNum = data[data.length-1].event.id;
-				//$.setRequestTimer();
+				$.setRequestTimer();
 			}, "json"
 		);
 	};	
@@ -173,12 +327,38 @@
 		interval = setInterval(function () {
 			$.requestInitBidUpdate();
 		}, ping_time);
-	}
+	};
+	
+	(function ( $ ) {
+	
+		$.fn.otherPlayerInfoOperator = function() {
+			return this.each(function () {
+				$(this).click(function () {
+					var num = $(this).attr("id");
+					num = parseInt(num.slice(num.length-1));
+					if (currentOtherPlayerSelect != null) {
+						$("#other_player_info_box_"+currentOtherPlayerSelect).fadeOut('slow', function() { } ).css("display","none");
+					}
+					$("#other_player_info_box_"+num).fadeIn('slow',function() { } ).css("display","block");
+					currentOtherPlayerSelect = num;
+				});
+			});
+		};
+	})(jQuery);
 	
 	$(document).ready(function() {
-		//$(".co_num_sale").biddingOperator();
-		//$(".init_bidding_co_number").highLightCoNumbers();
-		//lastEventNum = <%= @last_event_num %>;
+		$(".other_player_info_box:first").css("display","block");
+		$(".co_num_sale").biddingOperator();
+		$(".other_player_info_line").otherPlayerInfoOperator();
+		$(".co_num_sale").highLightCoNumbers();
+		$("#bidbuy_slider").slider({
+			step: bidIncrement,
+			slide: function(e, ui) {
+				$("#bidbuy_slider_amount").text(ui.value);
+			}
+		});
+		$("#bidbuy_slider").slider({ disabled:true } );
+		<%= @player == @game.first_player ? "" : "$.setRequestTimer();" %>
 	});
 	
 </script>
@@ -205,21 +385,24 @@
 					<div class="co_num_sale_line">
 						<div class="co_num_sale" id="co_<%= @companies.first.number %>" style="margin-left: 163px;">
 							<%= @companies.first.number %>
+							<%= display_flag(@companies.first, buy_number) %>
 						</div>
 					</div>
 					
 					<div class="co_num_sale_line">
 						<% @companies[1..6].each do |co| %>
-							<div class="co_num_sale" id="co_num_sale_<%= co.number %>">
+							<div class="co_num_sale" id="co_<%= co.number %>">
 								<%= co.number %>
+								<%= display_flag(co, buy_number) %>
 							</div>
 						<% end %> 
 					</div>
 					
 					<div class="co_num_sale_line">
 						<% @companies[7..11].each do |co| %>
-							<div class="co_num_sale" id="co_num_sale_<%= co.number %>" <%= co.number==7 ? "style='margin-left:43px;'" : "" %>>
+							<div class="co_num_sale" id="co_<%= co.number %>" <%= co.number==7 ? "style='margin-left:43px;'" : "" %>>
 								<%= co.number %>
+								<%= display_flag(co, buy_number) %>								
 							</div>
 						<% end %>
 					</div>
@@ -230,9 +413,7 @@
 		<div class="sunken_box_right_wrapper">
 			<div class="sunken_box">
 				<% @companies.each do |co| %>
-
-					<%= render :partial=>'game/init_companies', :locals => { :co=>co } %>
-			
+					<%= render :partial=>'game/init_companies', :locals => { :co=>co, :buy_number=>buy_number } %>
 				<% end %>		
 			</div>
 		</div>
@@ -241,19 +422,70 @@
 	<div class="mid_one_box_wrapper">
 		<div class="mid_box_wrapper">
 			<div class="mid_box_sect" style="border-right-width: 2px; border-right-style: solid; border-right-color: black;">
-			
+				<div class="mid_box_title">Your Info</div>
+					
+				<div class="mid_box_text">
+					<div>
+						<div class="mid_box_current_player" id="current_player_<%= @player.player_number %>" style="float:left; display:<%= (@player==@game.first_player || @player.previous_pass) ? "block;" : "none;" %>">
+							<% if (@player == @game.first_player) %>
+								&gt;&gt;
+							<% elsif @player.previous_pass %>
+								P
+							<% end %>
+						</div>
+						<div style="float:left;">&nbsp<%= @player.player_number %>) <%= @player.customer.username %></div>
+					</div>
+					<div style="clear: both;"><%= button_to "Logout", session_path(this_player), :method=>:delete, :class=>"init_bidding_button" %></div>
+					<br />
+					<div class="mid_box_title">Cash On Hand</div>
+					<div class="mid_box_cash">*<span id="player_cash_held_<%= @player.player_number %>"><%= @player.cash_held %></span></div>
+				</div>
 			</div>
 			
 			<div class="mid_box_sect" style="border-right-width: 4px; border-right-style: solid; border-right-color: black;">
-			
+				<div class="mid_box_title">Actions</div>
+					<input type="button" <%= @player == @game.first_player ? "class='init_bidding_button'" : "disabled='disabled' class='init_bidding_button_disabled'" %> id="pass_button" value="Pass" onClick="$.pass();"><br />
+					<input type="button" disabled='disabled' id="buy_button" value="Buy" class="init_bidding_button_disabled" onClick="$.buyCo();"><br />
+
+					<table style="width: 160px; vertical-align: middle; text-align: center; margin: 0 auto;">
+						<tr>
+							<td><div id="bidbuy_slider" style="width: 90px; margin: 10px;"></div></td>
+							<td><div class="mid_box_title" style="color: #3e6a4b; width: 50px;">*<span id="bidbuy_slider_amount">Bid</span></div></td>
+						</tr>
+					</table>
+					<input type="button" disabled='disabled' id="bid_button" value="Bid" class="init_bidding_button_disabled" onClick="$.bid();">
 			</div>
 
 			<div class="mid_box_sect" style="border-right-width: 2px; border-right-style: solid; border-right-color: black;">
-			
+				<div class="mid_box_title">Bids</div>
+				
+				<br /><div class="mid_box_text" id="bid_text_<%= @player.player_number %>">
+					<% if @player.bids.empty? %>
+						&lt;None&gt;
+					<% else %>
+						<% @player.bids.each do |bid| %>
+							[<%= bid.bid_on.number %>] *<%= bid.bid_amount %><br />
+						<% end %>
+					<% end %>
+				</div>							
 			</div>
 
 			<div class="mid_box_sect">
-			
+				<div class="mid_box_title">Bought</div>	
+				
+				<br /><div class="mid_box_text" id="bought_text_<%= @player.player_number %>">
+					<% cos = Array.new %>
+					<% cos.concat(@player.private_companies).concat(@player.independent_companies) %>
+
+					<% if cos.empty? %>
+						&lt;None&gt;
+					<% else %>
+						<% cos = cos.sort_by { |i| i.number } %>				
+						<% cos.each do |co| %>
+							<div>[<%= co.number %>] *<%= co.bought_for %></div>
+						<% end %>
+					<% end %>	
+				</div>	
 			</div>
 		</div>
 	</div>
@@ -269,29 +501,12 @@
 						<% p = @game.players %>
 						<% p = p.delete_if { |x| x == @player } %>
 						<% p.each_with_index do |player, index| %>
-				
-							<%= render :partial=>'game/init_players', :locals => { :player=>player, :first_player=>@game.first_player, :index=>index, :last=>(p.length-1) } %>	
-						
-						<% end %>			
+							<%= render :partial=>'game/init_players', :locals => { :player=>player, :first_player=>@game.first_player, :index=>index, :last=>(p.length-1) } %>
+						<% end %>	
 					</div>
-					
-					<div class="other_player_info_box">
-						<div class="other_player_info_box_title">(3) twelvetestor&nbsp&nbsp[*450]</div>
-						
-						<div class="other_player_info_box_cols">
-							<div class="other_player_info_box_col">
-								<span style="text-decoration: underline">Open Bids</span><br />
-								5-T &nbsp&nbsp[*120]<br />
-								11-AL &nbsp&nbsp[*220]<br />
-							</div>
-							
-							<div class="other_player_info_box_col">
-								<span style="text-decoration: underline">Bought Co's</span><br />
-								2-IF &nbsp&nbsp[*140]<br />
-								0-PI &nbsp&nbsp[*50]<br />
-							</div>
-						</div>
-					</div>
+						<% p.each do |player| %>
+							<%= render :partial=>'game/init_players_expanded', :locals => { :player=>player } %>
+						<% end %>					
 				</div>
 				
 			<% end %>
@@ -301,14 +516,14 @@
 		
 		<div class="sunken_box_right_wrapper">
 			<div class="sunken_box">
-			
+				<div class="event_text" id="event_text_box"></div>
 			</div>
 		</div>
 	</div>
 	
 	<div class="subheader">
 		<div class="subheader_text_left">
-			Other Player's Information
+			Competitors' Information
 		</div>	
 		
 		<div class="subheader_text_right">
@@ -332,4 +547,12 @@
 	<%= f.hidden_field :id, :value => @player.id %>
 <% end %>
 
+<%= form_for(:pass, :url=> game_pass_path, :html=> { :id =>"pass_form" }, :remote=>true ) do |f| %>
+	<%= f.hidden_field :id, :value => @player.id %>
+<% end %>
 
+<%= form_for(:bid, :url=> game_bid_path, :html=> { :id =>"bid_form" }, :remote=>true ) do |f| %>
+	<%= f.hidden_field :co_num, :value => "-1" %>
+	<%= f.hidden_field :amount, :value => "-1" %>
+	<%= f.hidden_field :id, :value => @player.id %>
+<% end %>

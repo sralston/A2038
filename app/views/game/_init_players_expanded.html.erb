@@ -1,0 +1,39 @@
+<div class="other_player_info_box" id="other_player_info_box_<%= player.player_number%>">
+	<div class="other_player_info_box_title">
+		(<%= player.player_number %>) <%= player.customer.username %>
+	</div>
+						
+	<div class="other_player_info_box_cols">
+		<div class="other_player_info_box_col">
+			<span style="text-decoration: underline">Open Bids</span><br />
+			<span id="bid_text_<%= player.player_number %>">
+				<% if player.bids.empty? %>
+					&lt;None&gt;
+				<% else %>
+					<% b = player.bids %>
+					<% b = b.sort_by { |i| i.bid_on.number } %>
+					<% b.each do |bid| %>				
+						[<%= bid.bid_on.number %>] *<%= bid.bid_amount %><br />
+					<% end %>
+				<% end %>
+			</span>
+		</div>
+							
+		<div class="other_player_info_box_col">
+			<span style="text-decoration: underline">Bought Co's</span><br />
+			<span id="bought_text_<%= player.player_number %>">
+			<% cos = Array.new %>
+			<% cos.concat(player.private_companies).concat(player.independent_companies) %>
+
+			<% if cos.empty? %>
+				&lt;None&gt;
+			<% else %>
+				<% cos = cos.sort_by { |i| i.number } %>				
+				<% cos.each do |co| %>
+					<div>[<%= co.number %>] *<%= co.bought_for %></div>
+				<% end %>
+			<% end %>
+			</span>
+		</div>
+	</div>	
+</div>

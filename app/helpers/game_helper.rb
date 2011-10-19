@@ -1,5 +1,17 @@
 module GameHelper
 
+	def display_flag(company, buy_number)
+		if company.status == "BOUGHT"
+			render :partial => "bought_flag", :locals => { :num=>company.number }
+		elsif company.number == buy_number
+			render :partial => "buy_flag", :locals => { :num=>company.number }
+		elsif !company.bids.empty?
+			render :partial => "bid_flag", :locals => { :num=>company.number }
+		else
+			return ""
+		end
+	end
+
 	def init_initial_firms(game)
 		# create the 12 initial firms for bidding at start of game
 		# also, create Asteroid League & TSI for the shares
@@ -175,7 +187,7 @@ module GameHelper
 		p.abbreviation = "RS"
 		p.income = 15
 		p.number = 9
-		p.starting_bid = 120
+		p.starting_bid = 160
 		p.bonus_text = "Corporation which buys this private company (after Phase I) may place 1 free Claim within range.  Player receives one 10% TSI Share."
 		p.save
 		
