@@ -68,7 +68,6 @@
 							case "BUY":
 								if (minCost <= cashHeld) {
 									if (coNum == 0 || (7 <= coNum && coNum <= 11)) {
-									alert("coNum in priv : "+coNum);
 										$("#bidbuy_slider").slider({ disabled : true });
 										$("#bidbuy_slider_amount").text("Bid");
 										buyWithSliderPrice = false;
@@ -115,10 +114,6 @@
 			});
 		};
 	})(jQuery);
-
-	$.updateSlider = function(v) {
-		$("#bidbuy_slider").slider( { value: v } );
-	};
 
 	(function ( $ ) {
 		$.fn.highLightCoNumbers = function() {
@@ -183,7 +178,7 @@
 		if (buyWithSliderPrice) {
 			buyAmount = parseInt($("#bidbuy_slider_amount").text());
 		} else {
-			buyAmount = parseInt(coStatus[currentSelectCo].slice(4));
+			buyAmount = parseInt(coStatus[currentSelectCo].slice(4, coStatus[currentSelectCo].length-1));
 		}
 		var confirmText = "Are you sure you want to purchase "+$("#co_title_name_"+currentSelectCo).text()+" for *"+buyAmount+"?";
 		confirmText += "\n\nYou will have *"+(cashHeld-buyAmount)+" left if you proceed."
@@ -240,6 +235,33 @@
    		});
 	};
 	
+	jQuery.biddingWarDropOut = function (coNum, playerNum, originalBid) {
+		var str = $("#co_text_info_"+coNum).html();
+		str = str.slice(str.indexOf(";")+1);
+		str = "<span style='color:#f3e852;'>Bids: " + str;
+		$("#co_text_info_"+coNum).html(str);
+		
+		str = $("#bid_text_"+coNum).html();
+		var origBidStr = "[" + coNum + "] *"+originalBid+"<br />"
+		str = str.slice(0,indexOf(origBidStr)) + str.slice(indexOf(origBidStr)+origBidStr.length);
+		$("#co_text_info_"+coNum).html(str);
+		
+		if (playerNum == playerNumber) { cashHeld += originalBid; }
+	};
+	
+	jQuery.biddingWarUpBid = function (bids, playerNum, coNum) {
+   	var newBid = parseInt(bids.slice(0,bids.indexOf("/")));
+   	var originalBid = parseInt(bids.slice(bids.indexOf("/")+1));
+		var str = $("#co_text_info_"+coNum).html()
+		str = str.slice(0,str.indexOf("[")) + str.slice(str.indexOf(";")+2) + "; ["+coNum+"] *"+newBid;
+		$("#co_text_info_"+coNum).html(str);
+		
+		str = $("#bid_text_"+coNum).html();
+		var origBidStr = "[" + coNum + "] *"+originalBid+"<br />"
+		str = str.slice(0,indexOf(origBidStr)) + str.slice(indexOf(origBidStr)+origBidStr.length) + "["+coNum+"] *"+newBid;
+		$("#bid_text_"+coNum).html(str);
+	}
+	
 	jQuery.coBidOn = function(coNum, amount, playerNum) {
 		//update cash for the player who bought the co
 		var cash = parseInt($("#player_cash_held_"+playerNum).text());
@@ -273,7 +295,6 @@
 		
 		//updating the top-left flag if one doesn't exist already
 		if (!flagExist) {
-			$("#flag_"+coNum).remove();
 			var valueString = "co_number="+coNum;
 			//request bought flag from server via $.get
 			$.ajax({
@@ -283,6 +304,79 @@
    			  dataType : 'script'
 	   		});
    		}
+	};
+	
+	jQuery.biddingWarChoice = function (bids, playerNum, coNum, txt) {
+		var flagText = $("#flag_"+coNum).text();
+		if (flagText.indexOf("BidWar") == -1) {
+			$("#flag_"+coNum).remove();
+			var valueString = "co_number="+coNum;
+			//request bought flag from server via $.get
+		   $.ajax({
+ 	   	 	type : 'GET',
+  	  	url : '/game/bidwar_flag',
+ 	   	  data : valueString,
+ 	  		dataType : 'script'
+   		});		
+   	}
+   	
+   	if (playerNum == playerNumber) {
+   		var popupText = txt.slice(0,txt.indexOf(";"));
+   		var highestBid = parseInt(bids.slice(0,bids.indexOf("/")));
+   		var originalBid = parseInt(bids.slice(bids.indexOf("/")+1));
+ 	  	var nextBid = highestBid + bidIncrement;
+ 	  	var cashAvailable = cashHeld + originalBid;
+ 	  	
+			if (cashAvailable < nextBid) {
+				popupText += "\n\nYour cash available for this bid stands at *"+cashAvailable+"; that is less than the minimum bid of *"+nextBid;
+				popupText += "\n\nYour bid will be automatically cancelled.  Better luck next time, loser.";
+				alert(popupText);
+				$("#bidding_war_co_num").val(coNum);
+				$("#bidding_war_new_bid").val(-1);
+				$("#bidding_war_form").submit();
+			} else {
+				popupText += "\n\nMinimum bid is *" + nextBid + "; you have *"+cashAvailable+" available for this bid.";
+				popupText += "\n\nPlease enter a new bid (integer with no decimals) or press CANCEL to leave the auction.";
+
+				var validResponse = false;
+				while (!validResponse) {
+					var newBid = prompt(popupText,nextBid);
+					if (newBid == null) {
+						// cancel bid; submit form
+						$("#bidding_war_co_num").val(coNum);
+						$("#bidding_war_new_bid").val(-1);
+						$("#bidding_war_form").submit();
+						validResponse = true;	
+					} else if (newBid == NaN) {
+							alert("The number you entered wasn't a valid integer; please try again or press CANCEL on the input box to leave the auction.");
+					} else if (parseInt(newBid) < nextBid) {
+							alert("The value you entered (*" + newBid + ") is less than the minimum bid of *"+nextBid+".\n\nPlease enter a bid equal to or higher than *" + nextBid + " or press CANCEL to leave the auction.");
+					} else if (parseInt(newBid) > cashAvailable) {
+							alert("The value you entered (*" + newBid + ") is more than the amount of cash you have available (*"+cashAvailable+").\n\nPlease enter a bid equal to or higher than *" + nextBid + " and less than *" + cashAvailable + "or press CANCEL to leave the auction.");
+					}	else {
+						$("#bidding_war_co_num").val(coNum);
+						$("#bidding_war_new_bid").val(newBid);
+						$("#bidding_war_form").submit();							
+						validResponse = true;	
+					}
+				}
+			}
+		}	
+	};
+	
+	jQuery.newCoAvailForPurchase = function (coNum, price) {
+		$("#co_text_info_"+coNum).html("<span style='color:#3e6a4b;'>Purchase for *"+price+".</span>");
+		coStatus[coNum] = "BUY_"+price+";";
+		//updating the top-left flag
+		$("#flag_"+coNum).remove();
+		var valueString = "co_number="+coNum;
+		//request bought flag from server via $.get
+	   $.ajax({
+    	  type : 'GET',
+    	  url : '/game/buy_flag',
+    	  data : valueString,
+   		  dataType : 'script'
+   		});
 	};
 	
 	jQuery.requestInitBidUpdate = function () {
@@ -304,15 +398,33 @@
 								$.coBidOn(parseInt(event.regarding), parseInt(event.value), parseInt(event.value2));
 								break;
 							case 'PASS':
-								$("#current_player_"+currentPlayerNum).text("P");
-								$("#current_player_"+currentPlayerNum).css("display","block");
+								$("#current_player_"+event.value).text("P");
+								$("#current_player_"+event.value).css("display","block");
 								break;
-							case 'NEW_PLAYER':
+							case 'NEW_FIRST_PLAYER':
 								$.newPlayer(event.value);
 								break;
 							case 'ALL_PASS':
+								alert("All players have passed their turn...moving on to the first Operating Round!");
 								$.redirect(event.text);
 								break;
+							case 'INITBID_CO_AVAIL_FOR_PURCHASE':
+								$.newCoAvailForPurchase(parseInt(event.value), parseInt(event.value2));
+								break;
+							case 'INITBID_END':
+								alert("All twelve initial companies have been purchased...moving on to the first Operating Round!");
+								$.redirect(event.text);
+								break;
+							case 'INITBID_BIDDING_WAR':
+								$.biddingWarChoice(event.regarding,parseInt(event.value),parseInt(event.value2), event.text);
+								break;
+							case 'INITBID_BIDDING_WAR_DROP_OUT':
+								$.biddingWarDropOut(parseInt(event.regarding), parseInt(event.value), parseInt(event.value2));
+								break;
+							case 'INITBID_BIDDING_WAR_UP_BID':
+								$.biddingWarUpBid(event.regarding,parseInt(event.value), parseInt(event.value2));
+								break;
+								
 						}  // end of switch
 					});
 				});
@@ -435,7 +547,7 @@
 						</div>
 						<div style="float:left;">&nbsp<%= @player.player_number %>) <%= @player.customer.username %></div>
 					</div>
-					<div style="clear: both;"><%= button_to "Logout", session_path(this_player), :method=>:delete, :class=>"init_bidding_button" %></div>
+					<div style="clear: both;"><%= button_to "Logout", session_path(this_player), :method=>:delete, :confirm=>true, :class=>"init_bidding_button" %></div>
 					<br />
 					<div class="mid_box_title">Cash On Hand</div>
 					<div class="mid_box_cash">*<span id="player_cash_held_<%= @player.player_number %>"><%= @player.cash_held %></span></div>
@@ -554,5 +666,11 @@
 <%= form_for(:bid, :url=> game_bid_path, :html=> { :id =>"bid_form" }, :remote=>true ) do |f| %>
 	<%= f.hidden_field :co_num, :value => "-1" %>
 	<%= f.hidden_field :amount, :value => "-1" %>
+	<%= f.hidden_field :id, :value => @player.id %>
+<% end %>
+
+<%= form_for(:bidding_war, :url=> game_bidding_war_path, :html=> { :id =>"bidding_war_form" }, :remote=>true ) do |f| %>
+	<%= f.hidden_field :co_num, :value => "-1" %>
+	<%= f.hidden_field :new_bid, :value => "-1" %>
 	<%= f.hidden_field :id, :value => @player.id %>
 <% end %>

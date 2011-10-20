@@ -7,9 +7,12 @@ A2038::Application.routes.draw do
 	post "game/buy"
 	post "game/pass"
 	post "game/bid"
+	post "game/bidding_war"
 	get "game/update"
 	get "game/bought_flag"
 	get "game/bid_flag"
+	get "game/bidwar_flag"
+	get "game/buy_flag"
 	get "login/testing"
 	
 	resources	:sessions, :only => [:create, :destroy]

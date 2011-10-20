@@ -27,4 +27,26 @@ class Player < ActiveRecord::Base
 		player.save
 		Event.deactivate(player)
 	end
+	
+	def transfer_share_from_bought_company(company)
+		if !company.share.nil?
+			share = company.share
+			self.shares << share
+		end
+	end
+	
+	def spend(money)
+		self.cash_held -= money
+		self.save
+	end
+	
+	def gain(money)
+		self.cash_held += money
+		self.save
+	end
+	
+	def set_prev_pass(bool)
+		self.previous_pass = bool
+		self.save
+	end
 end

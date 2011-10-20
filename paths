@@ -1,4 +1,3 @@
-         login_index GET    /login/index(.:format)          {:controller=>"login", :action=>"index"}
        login_waiting GET    /login/waiting(.:format)        {:controller=>"login", :action=>"waiting"}
      login_logged_in GET    /login/logged_in(.:format)      {:controller=>"login", :action=>"logged_in"}
         login_update GET    /login/update(.:format)         {:controller=>"login", :action=>"update"}
@@ -7,8 +6,12 @@
             game_buy POST   /game/buy(.:format)             {:controller=>"game", :action=>"buy"}
            game_pass POST   /game/pass(.:format)            {:controller=>"game", :action=>"pass"}
             game_bid POST   /game/bid(.:format)             {:controller=>"game", :action=>"bid"}
+    game_bidding_war POST   /game/bidding_war(.:format)     {:controller=>"game", :action=>"bidding_war"}
          game_update GET    /game/update(.:format)          {:controller=>"game", :action=>"update"}
     game_bought_flag GET    /game/bought_flag(.:format)     {:controller=>"game", :action=>"bought_flag"}
+       game_bid_flag GET    /game/bid_flag(.:format)        {:controller=>"game", :action=>"bid_flag"}
+    game_bidwar_flag GET    /game/bidwar_flag(.:format)     {:controller=>"game", :action=>"bidwar_flag"}
+       game_buy_flag GET    /game/buy_flag(.:format)        {:controller=>"game", :action=>"buy_flag"}
        login_testing GET    /login/testing(.:format)        {:controller=>"login", :action=>"testing"}
             sessions POST   /sessions(.:format)             {:action=>"create", :controller=>"sessions"}
              session DELETE /sessions/:id(.:format)         {:action=>"destroy", :controller=>"sessions"}

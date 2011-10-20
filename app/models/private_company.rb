@@ -1,6 +1,8 @@
 class PrivateCompany < ActiveRecord::Base
 	attr_accessible :tag_line
 	
+	include CompanyHelper
+	
 	belongs_to :priv_co_owner, :polymorphic => true
 	has_many :bids, :as => :bid_on
 	has_many :players, :through=>:bids
