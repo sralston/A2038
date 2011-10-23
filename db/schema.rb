@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111019224230) do
+ActiveRecord::Schema.define(:version => 20111021005555) do
 
   create_table "bids", :force => true do |t|
     t.integer  "player_id"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20111019224230) do
     t.integer  "bid_amount"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "active",      :default => true
   end
 
   add_index "bids", ["player_id", "bid_on_id", "bid_on_type"], :name => "bids_indx"
@@ -91,19 +92,19 @@ ActiveRecord::Schema.define(:version => 20111019224230) do
   add_index "free_items", ["private_company_id"], :name => "index_free_items_on_private_company_id"
 
   create_table "games", :force => true do |t|
-    t.string   "game_code",          :limit => 6,                    :null => false
-    t.boolean  "long_game",                       :default => true
-    t.integer  "bank_amount",                     :default => 10000, :null => false
-    t.string   "current_state",                   :default => "NEW", :null => false
-    t.integer  "num_players",                     :default => 4
-    t.integer  "round",                           :default => 1
-    t.integer  "operating_round",                 :default => 1
+    t.string   "game_code",                   :limit => 6,                    :null => false
+    t.boolean  "long_game",                                :default => true
+    t.integer  "bank_amount",                              :default => 10000, :null => false
+    t.string   "current_state",                            :default => "NEW", :null => false
+    t.integer  "num_players",                              :default => 4
+    t.integer  "round",                                    :default => 1
+    t.integer  "operating_round",                          :default => 1
     t.integer  "first_player_id"
     t.integer  "current_player_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "bidding_war_co_num"
-    t.boolean  "bank_broke",                      :default => false
+    t.integer  "bidding_war_first_player_id"
+    t.boolean  "bank_broke",                               :default => false
   end
 
   add_index "games", ["current_player_id"], :name => "index_games_on_current_player_id"

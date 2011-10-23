@@ -6,7 +6,7 @@ module GameHelper
 		elsif company.number == buy_number
 			render :partial => "buy_flag", :locals => { :num=>company.number }
 		elsif !company.bids.empty?
-			render :partial => "bid_flag", :locals => { :num=>company.number }
+			render :partial => "bid_flag", :locals => { :num=>company.number, :co=>company }
 		else
 			return ""
 		end

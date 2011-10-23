@@ -3,7 +3,7 @@
 
 	var lastEventNum;
 	var interval;
-	var ping_time = 6000; 
+	var ping_time = 10000; 
 
 	jQuery.stopUpdateButton = function() {
 		$("#stopUpdateButton").attr("disabled","disabled");

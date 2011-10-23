@@ -4,15 +4,17 @@ class Bid < ActiveRecord::Base
 	belongs_to :player
 	belongs_to :bid_on, :polymorphic => true
 	
-	def up_bid(amount)
+	def up_bid(amount, player)
 		player.spend(amount-self.bid_amount)
-		Bid.update(self.id, amount)
+		self.bid_amount = amount
+		self.save
 	end
 	
 	def lose_bid(company, player)
 		player.gain(self.bid_amount)
+		self.active = false;
+		self.save
 		Event.bidding_war_drop_out(company, player, self.bid_amount)
-		company.bids.delete(self)
 	end
 	
 end

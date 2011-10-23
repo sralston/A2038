@@ -6,7 +6,7 @@
             game_buy POST   /game/buy(.:format)             {:controller=>"game", :action=>"buy"}
            game_pass POST   /game/pass(.:format)            {:controller=>"game", :action=>"pass"}
             game_bid POST   /game/bid(.:format)             {:controller=>"game", :action=>"bid"}
-    game_bidding_war POST   /game/bidding_war(.:format)     {:controller=>"game", :action=>"bidding_war"}
+             game_bw POST   /game/bw(.:format)              {:controller=>"game", :action=>"bw"}
          game_update GET    /game/update(.:format)          {:controller=>"game", :action=>"update"}
     game_bought_flag GET    /game/bought_flag(.:format)     {:controller=>"game", :action=>"bought_flag"}
        game_bid_flag GET    /game/bid_flag(.:format)        {:controller=>"game", :action=>"bid_flag"}

@@ -7,7 +7,7 @@ A2038::Application.routes.draw do
 	post "game/buy"
 	post "game/pass"
 	post "game/bid"
-	post "game/bidding_war"
+	post "game/bw"
 	get "game/update"
 	get "game/bought_flag"
 	get "game/bid_flag"

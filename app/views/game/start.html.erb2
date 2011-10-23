@@ -2,25 +2,18 @@
 
 <script language=javascript>
 	var gameID = <%= @game.id %>
+	var interval;
+	var delay;
 	var currentSelectCo = null;
 	var currentOtherPlayerSelect = null;
 	var cashHeld = <%= @player.cash_held %>;
 	var bidIncrement = 5;
-	var currentPlayer = <%= ((@game.bidding_war_first_player == @player) || (@game.bidding_war_first_player.nil? && @game.first_player == @player)) ? "true" : "false" %>;
+	var currentPlayer = <%= @player == @game.first_player ? "true" : "false" %>;
 	var playerNumber = <%= @player.player_number %>;
 	var lastEventNum = <%= @last_event_num %>;
+	var currentPlayerNum = <%= @game.first_player.id %>;
 	var buyWithSlidePrice = false;
-	var bidwarPreviousStatus = "";
-	var events = new Array();
-	var currentEvent = 0;
-
-<% s = "var abbreviations = [" %>
-<% @companies.each do |co| %>
-	<% s+= "'"+co.abbreviation + "'," %>
-<% end %>
-<% s = s[0..s.length-2] %>
-<% s+= "];" %>
-<%= s %>
+	var biddingWarCurrentPlayerNum = <%= @game.bidding_war_first_player.nil? ? "null" : @game.bidding_war_first_player.player_number %>; 
 
 <% buy_found = false %>
 <% buy_number = -1 %>
@@ -31,6 +24,7 @@
 	 	<% s+= "'BOT;'" %>
 	<% elsif (!co.bids.where(:active=>true).empty?) %>
 	 	<% s+= "'BID_" + co.bids.where(:active=>true).last.bid_amount.to_s %>
+	 	// if player has bid on this before, have 'true' (as binary) tacked on to end
 	 	<% co.players.include?(@player) ? s+= ";1'" : s+= ";0'" %>
 	<% elsif (!buy_found) %>
 	 	<%  s+= "'BUY_" + co.starting_bid.to_s + ";'" %>
@@ -56,7 +50,7 @@
 					var coNum = $(this).attr("id");
 					coNum = parseInt(coNum.slice(coNum.indexOf("_")+1));
 
-					if (currentPlayer) {
+					if (currentPlayer && biddingWarCurrentPlayerNum == null) {
 						var coCase = coStatus[coNum].slice(0,3);
 						var minCost = parseInt(coStatus[coNum].slice(4, coStatus[coNum].indexOf(";")));
 
@@ -79,7 +73,7 @@
 								if (minCost <= cashHeld) {
 									if (coNum == 0 || (7 <= coNum && coNum <= 11)) {
 										$("#bidbuy_slider").slider({ disabled : true });
-										$("#bidbuy_slider_amount").text("---");
+										$("#bidbuy_slider_amount").text("Bid");
 										buyWithSliderPrice = false;
 									} else {								
 										$("#bidbuy_slider").slider({
@@ -99,7 +93,7 @@
 							case "BOT": 
 								$.bidbuyOff();
 								$("#bidbuy_slider").slider({ disabled : true });
-								$("#bidbuy_slider_amount").text("---");
+								$("#bidbuy_slider_amount").text("Bid");
 								break;
 								
 							case "NOB":
@@ -149,26 +143,27 @@
 	};
 	
 	jQuery.newPlayer = function(playerNum) {
-		$("#player_status_"+playerNum).text("Current");
+		biddingWarCurrentPlayerNum = null;
+		$("#current_player_"+playerNum).text(">>");
+		$("#current_player_"+playerNum).css("display","block");
 		
 		if (playerNumber == playerNum) {
 			currentPlayer = true;
-   		clearTimeout(interval);
 			$("#pass_button").removeAttr("disabled").removeClass("init_bidding_button_disabled").addClass("init_bidding_button");
 		} else {
 			currentPlayer = false;
 		}
-	};
+		
+		if ($("#current_player_"+currentPlayerNum).text() != "P") {
+			$("#current_player_"+currentPlayerNum).css("display","none");
+		}
+		currentPlayerNum = playerNum;
+	}
 	
 	jQuery.pass = function () {
-		var confirmText = "Are you sure you want to Pass your turn?";
-		var confirmResponse = confirm(confirmText);
-		if (confirmResponse) {
-			$.allButtonsOff();
-			$("#player_status_"+playerNumber).text("Pass");
-			$("#pass_form").submit();
-		}
-	};
+		$.allButtonsOff();
+		$("#pass_form").submit();
+	}
 	
 	jQuery.bid = function () {
 		var bidAmount = parseInt($("#bidbuy_slider_amount").text());
@@ -177,7 +172,6 @@
 		var confirmResponse = confirm(confirmText);
 		if (confirmResponse) {
 			$.allButtonsOff();
-			$("#player_status_"+playerNumber).text("Wait");
 			$("#bid_co_num").val(currentSelectCo);
 			$("#bid_amount").val(bidAmount);
 			$("#bid_form").submit();
@@ -196,9 +190,6 @@
 		var confirmResponse = confirm(confirmText)
 		if (confirmResponse) {
 			$.allButtonsOff();
-			var updateText = "Wait";
-			if (bidwarPreviousStatus != "") { updateText = bidwarPreviousStatus; }
-			$("#player_status_"+playerNumber).text(updateText);
 			$("#buy_co_num").val(currentSelectCo);
 			$("#buy_amount").val(buyAmount);
 			$("#buy_form").submit();
@@ -208,27 +199,8 @@
 	jQuery.addEventText = function (eventText, createdAt) {
 		dt = "2038"+createdAt.slice(4);
 		dt = dt.replace("T"," ").replace("Z","");
-		s = events.length + ") [" + dt + "] " + eventText;
-
-		events.push(s);
-
-		for (x=4; x>0; x--) {
-			$("#event_line_"+x).text(events[events.length-x]);
-		}
-	};
-	
-	jQuery.moveEventsUp = function () {
-		currentEvent = (currentEvent-3) % events.length;
-			for (x=4; x>0; x--) {
-				$("#event_line_"+x).text(events[(events.length-currentEvent-x)]);
-			}
-	};
-	
-	jQuery.moveEventsDown = function () {
-		currentEvent = (currentEvent+3) % events.length;
-		for (x=4; x>0; x--) {
-			$("#event_line_"+(x)).text(events[(currentEvent-x)]);
-		}
+		s = "<div class='event_line'>[" + dt + "] " + eventText + "</div>";
+		$("#event_text_box").append(s);
 	};
 	
 	jQuery.coBought = function(coNum, cost, playerNum) {
@@ -245,20 +217,19 @@
 		
 		//update the coStatus so that others can't buy this bought co
 		coStatus[coNum] = "BOT;";
-	
+		
+		//update top-right section text
+		$("#co_text_info_"+coNum).html("<span style='color: #a83b46;'>Bought by Player " + playerNum + " for *" + cost+"</span>");
+		
 		//update the listing of bought companies for that player
-		var updateString = "<div>["+coNum+"] "+abbreviations[coNum] + " *"+cost+"</div>";
+		var updateString = "<div>["+coNum+"] *"+cost+"</div>";
 
-		var noneString = $("#player_bought_cos_"+playerNum).text();
+		var noneString = $("#bought_text_"+playerNum).text();
 		if (noneString.indexOf("None") != -1) {
-			$("#player_bought_cos_"+playerNum).html(updateString);
+			$("#bought_text_"+playerNum).html(updateString);
 		} else {
-			$("#player_bought_cos_"+playerNum).append(updateString);
+			$("#bought_text_"+playerNum).append(updateString);
 		}
-		
-		$("#player_status_"+playerNum).text("Wait");
-		
-		$(".player_open_bids_"+coNum).remove();
 		
 		//updating the top-left flag
 		$("#flag_"+coNum).remove();
@@ -273,31 +244,42 @@
 	};
 	
 	jQuery.biddingWarDropOut = function (coNum, playerNum, originalBid) {
+		//var str = $("#co_text_info_"+coNum).html();
+		//str = str.slice(str.indexOf(";")+1);
+		//str = "<span style='color:#f3e852;'>Bids: " + str;
+		//$("#co_text_info_"+coNum).html(str);
+		
+		//str = $("#bid_text_"+coNum).html();
+		//var origBidStr = "[" + coNum + "] *"+originalBid+"<br />"
+		//str = str.slice(0,str.indexOf(origBidStr)) + str.slice(str.indexOf(origBidStr)+origBidStr.length);
+		//$("#co_text_info_"+coNum).html(str);
+		
 		var currentCash = parseInt($("#player_cash_held_"+playerNum).text());
-		currentCash += originalBid;
-		$("#player_cash_held_"+playerNum).html(currentCash);
-	  $("#player_status_"+playerNum).text(bidwarPreviousStatus);		
-		if (playerNum == playerNumber) { cashHeld = currentCash; }
-		$("#"+playerNum+"_player_open_bids_"+coNum).remove();
+		currentCash += originalBid
+		$("#player_cash_held_"+playerNum).html(currentCash)
+		
+		if (playerNum == playerNumber) { cashHeld = currentCash }
 	};
 	
 	jQuery.biddingWarUpBid = function (bids, playerNum, coNum) {
    	var newBid = parseInt(bids.slice(0,bids.indexOf("/")));
     var originalBid = parseInt(bids.slice(bids.indexOf("/")+1));
+		//var str = $("#co_text_info_"+coNum).html()
+		//str = str.slice(0,str.indexOf("[")) + str.slice(str.indexOf(";")+2) + "; ["+coNum+"] *"+newBid;
+		//$("#co_text_info_"+coNum).html(str);
 
 		var currentCash = parseInt($("#player_cash_held_"+playerNum).text());
 		currentCash -= (newBid - originalBid);
-		$("#player_cash_held_"+playerNum).html(currentCash);
+		$("#player_cash_held_"+playerNum).html(currentCash)
 		
-	  $("#player_status_"+playerNum).text(bidwarPreviousStatus);		
-		
-		if (playerNum == playerNumber) { cashHeld = currentCash; }
+		if (playerNum == playerNumber) { cashHeld = currentCash }
 		
 		coStatus[coNum] = "BID_" + newBid + ";1";
 		
-		var updateString = "<div id='" + playerNum + "_player_open_bids_" + coNum + "' class='player_open_bids_" + coNum + "'>[" + coNum + "] " + abbreviations[coNum] + " *" + newBid + "</div>";
-		$("#"+playerNum+"_player_open_bids_"+coNum).remove();
-		$("#player_open_bid_area_"+playerNum).append(updateString);
+		//str = $("#bid_text_"+coNum).html();
+		//var origBidStr = "[" + coNum + "] *"+originalBid+"<br />"
+		//str = str.slice(0,str.indexOf(origBidStr)) + str.slice(str.indexOf(origBidStr)+origBidStr.length) + "["+coNum+"] *"+newBid;
+		//$("#bid_text_"+coNum).html(str);
 	}
 	
 	jQuery.coBidOn = function(coNum, amount, playerNum) {
@@ -310,33 +292,43 @@
 		if(playerNum == playerNumber) { cashHeld = cash; }
 		
 		//update the coStatus to reflect the highest bid & disallow bidding player from bidding again
+		var flagExist = (coStatus[coNum].slice(0,3) == "NOB") ? false : true; // used to request flag if false
 		var bidStatus = (currentPlayer) ? "1" : coStatus[coNum].slice(coStatus[coNum].indexOf(";")+1);
 		coStatus[coNum] = "BID_" + amount + ";" + bidStatus;
 		
-		//update the listing of bid companies for that player
-		var updateString = "<div id='" + playerNum + "_player_open_bids_" + coNum + "' class='player_open_bids_" + coNum + "'>[" + coNum + "] " + abbreviations[coNum] + " *" + amount + "</div>";
-
-		var noneString = $("#player_open_bid_area_"+playerNum).text();
-		if (noneString.indexOf("None") != -1) {
-			$("#player_open_bid_area_"+playerNum).html(updateString);
+		//update top-right section text
+		if (($("#co_text_info_"+coNum).text()).indexOf("Currently") != -1) { //meaning that 'currently' was found; start a fresh string
+			$("co_text_info_"+coNum).html("<span style='color:#f3e852;'>Bids: ("+playerNum+") *"+amount);
 		} else {
-			$("#player_open_bid_area_"+playerNum).append(updateString);
+			$("co_text_info_"+coNum).html($("#co_text_info_"+coNum).html()+"; ("+playerNum+") *"+amount);
 		}
 		
-		$("#player_status_"+playerNum).text("Wait");		
+		//update the listing of bid companies for that player
+		var updateString = "<div>["+coNum+"] *"+amount+"</div>";
+
+		var noneString = $("#bid_text_"+playerNum).text();
+		if (noneString.indexOf("None") != -1) {
+			$("#bid_text_"+playerNum).html(updateString);
+		} else {
+			$("#bid_text_"+playerNum).append(updateString);
+		}
 		
-		var valueString = "co_number="+coNum;
-		//request bought flag from server via $.get
-		$.ajax({
-   		type : 'GET',
-   		url : '/game/bid_flag',
-   	  data : valueString,
- 			dataType : 'script'
-		});
+		//updating the top-left flag if one doesn't exist already
+		if (!flagExist) {
+			var valueString = "co_number="+coNum;
+			//request bought flag from server via $.get
+			$.ajax({
+    		  type : 'GET',
+    		  url : '/game/bid_flag',
+ 	  	 	  data : valueString,
+   			  dataType : 'script'
+	   		});
+   		}
 	};
 	
 	jQuery.biddingWarChoice = function (bids, playerNum, coNum, txt) {
 		$.allButtonsOff();
+		biddingWarCurrentPlayerNum = playerNum;
 		var flagText = $("#flag_"+coNum).text();
 
 		if (flagText.indexOf("BidWar") == -1) {
@@ -351,12 +343,9 @@
    		});		
    	}
    	
-	  bidwarPreviousStatus = $("#player_status_"+playerNum).text();
- 	  $("#player_status_"+playerNum).text("BidWar");
-   	
    	if (playerNum == playerNumber) {
    		currentPlayer = true;
-   		clearTimeout(interval);
+	   	interval=window.clearInterval(interval); // turn off request updates while deciding
    		var popupText = txt.slice(0,txt.indexOf(";"));
    		var highestBid = parseInt(bids.slice(0,bids.indexOf("/")));
    		var originalBid = parseInt(bids.slice(bids.indexOf("/")+1));
@@ -390,11 +379,10 @@
 					} else if (parseInt(newBid) > cashAvailable) {
 							alert("The value you entered (*" + newBid + ") is more than the amount of cash you have available (*"+cashAvailable+").\n\nPlease enter a bid equal to or higher than *" + nextBid + " and less than *" + cashAvailable + "or press CANCEL to leave the auction.");
 					}	else {
-						validResponse = true;	
-						$("#player_status_"+playerNumber).text(bidwarPreviousStatus);
 						$("#bidding_war_co_num").val(coNum);
 						$("#bidding_war_new_bid").val(newBid);
 						$("#bidding_war_form").submit();							
+						validResponse = true;	
 					}
 				}
 			}
@@ -419,77 +407,99 @@
 	};
 	
 	jQuery.requestInitBidUpdate = function () {
+		interval=window.clearInterval(interval); // pause the request to handle updates.
 		$.get('/game/update',
 			{ last_event_num : lastEventNum, id : gameID, playernum : playerNumber, intv : interval },
 			function(data) {
 				//do stuff when receive back in JSON
 				$.each(data, function(x, events) {
 					$.each(events, function(y, event) {
-						if (event.code != "NO_UPDATE" && event.code != "PING"&& event.code != "INITBID_END") { 
+						if (event.code != "NO_UPDATE" && event.code != "ALL_PASS") { 
 							$.addEventText(event.text, event.created_at);
 						}
-							switch(event.code) {
-								case 'PING':
-									interval = setTimeout("$.requestInitBidUpdate();", ping_time);
-									break;
-								case 'INITBID_BUY':	
-									$.coBought(parseInt(event.regarding), parseInt(event.value), parseInt(event.value2));
-									break;
-								case 'INITBID_BID':
-									$.coBidOn(parseInt(event.regarding), parseInt(event.value), parseInt(event.value2));
-									break;
-								case 'PASS':
-									$("#player_status_"+event.value).text("Pass");
-									break;
-								case 'NEW_FIRST_PLAYER':
-									$.newPlayer(event.value);
-									break;
-								case 'ALL_PASS':
-									break;
-								case 'INITBID_CO_AVAIL_FOR_PURCHASE':
-									$.newCoAvailForPurchase(parseInt(event.value), parseInt(event.value2));
-									break;
-								case 'INITBID_END':
-									alert("The initial bidding round is over...moving on to the first Operating Round!");
-									$.redirect(event.text);
-									break;
-								case 'INITBID_BIDDING_WAR':
-									$.biddingWarChoice(event.regarding,parseInt(event.value),parseInt(event.value2), event.text);
-									break;
-								case 'INITBID_BIDDING_WAR_DROP_OUT':
-									$.biddingWarDropOut(parseInt(event.regarding), parseInt(event.value), parseInt(event.value2));
-									break;
-								case 'INITBID_BIDDING_WAR_UP_BID':
-									$.biddingWarUpBid(event.regarding,parseInt(event.value), parseInt(event.value2));
-									break;
-								case 'INITBID_BID_WAR_ENDED':
-									$("#player_status_"+event.value).text(bidwarPreviousStatus);
-									break;
-							}  // end of switch
-						
+						switch(event.code) {
+							case 'INITBID_BUY':	
+								$.coBought(parseInt(event.regarding), parseInt(event.value), parseInt(event.value2));
+								break;
+							case 'INITBID_BID':
+								$.coBidOn(parseInt(event.regarding), parseInt(event.value), parseInt(event.value2));
+								break;
+							case 'PASS':
+								$("#current_player_"+event.value).text("P");
+								$("#current_player_"+event.value).css("display","block");
+								break;
+							case 'NEW_FIRST_PLAYER':
+								$.newPlayer(event.value);
+								break;
+							case 'ALL_PASS':
+								alert("All players have passed their turn...moving on to the first Operating Round!");
+								$.redirect(event.text);
+								break;
+							case 'INITBID_CO_AVAIL_FOR_PURCHASE':
+								$.newCoAvailForPurchase(parseInt(event.value), parseInt(event.value2));
+								break;
+							case 'INITBID_END':
+								alert("All twelve initial companies have been purchased...moving on to the first Operating Round!");
+								$.redirect(event.text);
+								break;
+							case 'INITBID_BIDDING_WAR':
+								$.biddingWarChoice(event.regarding,parseInt(event.value),parseInt(event.value2), event.text);
+								break;
+							case 'INITBID_BIDDING_WAR_DROP_OUT':
+								$.biddingWarDropOut(parseInt(event.regarding), parseInt(event.value), parseInt(event.value2));
+								break;
+							case 'INITBID_BIDDING_WAR_UP_BID':
+								$.biddingWarUpBid(event.regarding,parseInt(event.value), parseInt(event.value2));
+								break;
+								
+						}  // end of switch
+						delay = setInterval(function() { },10000);
 					});
 				});
+				
 				lastEventNum = data[data.length-1].event.id;
-			 }, "json");
+				if (!currentPlayer) { $.setRequestTimer(); }
+			}, "json"
+		);
 	};	
 	
+	jQuery.setRequestTimer = function () {
+		interval = setInterval(function () {
+			$.requestInitBidUpdate();
+		}, ping_time);
+	};
+	
+	(function ( $ ) {
+	
+		$.fn.otherPlayerInfoOperator = function() {
+			return this.each(function () {
+				$(this).click(function () {
+					var num = $(this).attr("id");
+					num = parseInt(num.slice(num.length-1));
+					if (currentOtherPlayerSelect != null) {
+						$("#other_player_info_box_"+currentOtherPlayerSelect).fadeOut('slow', function() { } ).css("display","none");
+					}
+					$("#other_player_info_box_"+num).fadeIn('slow',function() { } ).css("display","block");
+					currentOtherPlayerSelect = num;
+				});
+			});
+		};
+	})(jQuery);
+	
 	$(document).ready(function() {
+		$(".other_player_info_box:first").css("display","block");
 		$(".co_num_sale").biddingOperator();
+		$(".other_player_info_line").otherPlayerInfoOperator();
 		$(".co_num_sale").highLightCoNumbers();
 		$("#bidbuy_slider").slider({
-			disabled: true,
 			step: bidIncrement,
 			slide: function(e, ui) {
 				$("#bidbuy_slider_amount").text(ui.value);
 			}
 		});
-
-
-		<% if (@game.bidding_war_first_player == @player) %>
-			$.biddingWarChoice('<%= @event.regarding %>',parseInt(<%= @event.value %>),parseInt(<%= @event.value2 %>),'<%= @event.text %>');	
-		<% elsif (@game.bidding_war_first_player != @player && @game.first_player != @player) %>
-			interval = setTimeout("$.requestInitBidUpdate();", ping_time);
-		<% end %>
+		$("#bidbuy_slider").slider({ disabled:true } );
+		<%= (@player == @game.first_player) && @game.bidding_war_first_player.nil? ? "" : "$.setRequestTimer();" %>
+		<%= !@game.bidding_war_first_player.nil? ? "$.biddingWarChoice('#{@event.regarding}',parseInt(#{@event.value}),parseInt(#{@event.value2}),'#{@event.text}');" : "" %>
 	});
 	
 </script>
@@ -550,62 +560,118 @@
 		</div>
 	</div>
 	
-	<div class="lower_wrapper">
-		<div class="action_wrapper">
-			<div class="action_title">Actions</div>
-				<input type="button" <%= (@player == @game.first_player) && @game.bidding_war_first_player.nil? ? "class='init_bidding_button'" : "disabled='disabled' class='init_bidding_button_disabled'" %> id="pass_button" value="Pass" onClick="$.pass();" /><br />
-				<br />
-				<input type="button" disabled='disabled' id="buy_button" value="Buy" class="init_bidding_button_disabled" onClick="$.buyCo();" /><br />
-				<table style="width: 160px; vertical-align: middle; text-align: center; margin: 0 auto;">
-					<tr>
-						<td><div id="bidbuy_slider" style="width: 90px; margin: 10px;"></div></td>
-						<td><div class="action_title" style="color: #3e6a4b; width: 50px;">*<span id="bidbuy_slider_amount">---</span></div></td>
-					</tr>
-				</table>
-				<input type="button" disabled='disabled' id="bid_button" value="Bid" class="init_bidding_button_disabled" onClick="$.bid();" /><br />
-				<br />
-				<input type="button" id="map_button" value="Map" class="init_bidding_button" /><br />
-				<input type="button" id="rules_button" value="Rules" class="init_bidding_button" /><br />
-				<br />
-				<%= button_to "Logout", session_path(this_player), :method=>:delete, :confirm=>"Are you sure you want to logout?", :class=>"init_bidding_button" %>
-		</div>
-		
-		<div class="info_wrapper">
-			<table style="width: 100%; vertical-align: middle; border: none;">
-				<tr class="info_title">
-					<td style="width: 140px;">Player</td>
-					<td style="width: 80px;">Status</td>
-					<td style="width: 50px;">Cash</td>
-					<td style="width: 150px;">Open Bids</td>
-					<td style="width: 150px;">Bought Co's</td>
-				</tr>
+	<div class="mid_one_box_wrapper">
+		<div class="mid_box_wrapper">
+			<div class="mid_box_sect" style="border-right-width: 2px; border-right-style: solid; border-right-color: black;">
+				<div class="mid_box_title">Your Info</div>
+					
+				<div class="mid_box_text">
+					<div>
+						<div class="mid_box_current_player" id="current_player_<%= @player.player_number %>" style="float:left; display:<%= (@player==@game.first_player || @player.previous_pass) ? "block;" : "none;" %>">
+							<% if (@player == @game.first_player) %>
+								&gt;&gt;
+							<% elsif @player.previous_pass %>
+								P
+							<% end %>
+						</div>
+						<div style="float:left;">&nbsp<%= @player.player_number %>) <%= @player.customer.username %></div>
+					</div>
+					<div style="clear: both;"><%= button_to "Logout", session_path(this_player), :method=>:delete, :confirm=>"Are you sure you want to logout?", :class=>"init_bidding_button" %></div>
+					<br />
+					<div class="mid_box_title">Cash On Hand</div>
+					<div class="mid_box_cash">*<span id="player_cash_held_<%= @player.player_number %>"><%= @player.cash_held %></span></div>
+				</div>
+			</div>
+			
+			<div class="mid_box_sect" style="border-right-width: 4px; border-right-style: solid; border-right-color: black;">
+				<div class="mid_box_title">Actions</div>
+					<input type="button" <%= (@player == @game.first_player) && @game.bidding_war_first_player.nil? ? "class='init_bidding_button'" : "disabled='disabled' class='init_bidding_button_disabled'" %> id="pass_button" value="Pass" onClick="$.pass();"><br />
+					<input type="button" disabled='disabled' id="buy_button" value="Buy" class="init_bidding_button_disabled" onClick="$.buyCo();"><br />
+
+					<table style="width: 160px; vertical-align: middle; text-align: center; margin: 0 auto;">
+						<tr>
+							<td><div id="bidbuy_slider" style="width: 90px; margin: 10px;"></div></td>
+							<td><div class="mid_box_title" style="color: #3e6a4b; width: 50px;">*<span id="bidbuy_slider_amount">Bid</span></div></td>
+						</tr>
+					</table>
+					<input type="button" disabled='disabled' id="bid_button" value="Bid" class="init_bidding_button_disabled" onClick="$.bid();">
+			</div>
+
+			<div class="mid_box_sect" style="border-right-width: 2px; border-right-style: solid; border-right-color: black;">
+				<div class="mid_box_title">Bids</div>
 				
-				<% @game.players.each do |player| %>
-					<%= render :partial => 'game/init_players', :locals => { :player => player, :game => @game, :player_number=>@player.player_number } %>
-				<% end %>
-			</table>
-		</div>	
+				<br /><div class="mid_box_text" id="bid_text_<%= @player.player_number %>">
+					<% if @player.bids.where(:active=>true).empty? %>
+						&lt;None&gt;
+					<% else %>
+						<% @player.bids.where(:active=>true).each do |bid| %>
+							[<%= bid.bid_on.number %>] *<%= bid.bid_amount %><br />
+						<% end %>
+					<% end %>
+				</div>							
+			</div>
+
+			<div class="mid_box_sect">
+				<div class="mid_box_title">Bought</div>	
+				
+				<br /><div class="mid_box_text" id="bought_text_<%= @player.player_number %>">
+					<% cos = Array.new %>
+					<% cos.concat(@player.private_companies).concat(@player.independent_companies) %>
+
+					<% if cos.empty? %>
+						&lt;None&gt;
+					<% else %>
+						<% cos = cos.sort_by { |i| i.number } %>				
+						<% cos.each do |co| %>
+							<div>[<%= co.number %>] *<%= co.bought_for %></div>
+						<% end %>
+					<% end %>	
+				</div>	
+			</div>
+		</div>
 	</div>
 	
-	<div class="event_wrapper event_info">
-		<div id="event_lines" style="float: left; height: 80px; width: 805px;">
-			<div id="event_line_4"></div>
-			<div id="event_line_3"></div>
-			<div id="event_line_2"></div>
-			<div id="event_line_1"></div>
+	<div class="two_box_wrapper">
+		<div class="sunken_box_left_wrapper">
+			<div class="sunken_box">
+			
+			<% if @game.num_players != 1 %>
+			
+				<div class="other_player_info_wrapper">
+					<div class="other_player_info_list" style="margin-top: <%= (6-@game.num_players)*16 %>px; height:<%= (@game.num_players-1)*32 %>px;">
+						<% p = @game.players %>
+						<% p = p.delete_if { |x| x == @player } %>
+						<% p.each_with_index do |player, index| %>
+							<%= render :partial=>'game/init_players', :locals => { :player=>player, :first_player=>@game.first_player, :index=>index, :last=>(p.length-1) } %>
+						<% end %>	
+					</div>
+						<% p.each do |player| %>
+							<%= render :partial=>'game/init_players_expanded', :locals => { :player=>player } %>
+						<% end %>					
+				</div>
+				
+			<% end %>
+				
+			</div>
 		</div>
 		
-		<div style="float: right; width: 25px; height: 80px;">
-			<div style="width: 25px; height: 40px; margin=0; clear: both;"><input type="image" src="../images/yellow_arrow_up.gif" onMouseOver="this.src='../images/blue_arrow_up.gif';" onMouseOut="this.src='../images/yellow_arrow_up.gif';" onClick="$.moveEventsUp();" /></div>
-			<div style="width: 25px; height: 40px; margin=0; clear: both;"><input type="image" src="../images/yellow_arrow_down.gif" onMouseOver="this.src='../images/blue_arrow_down.gif';" onMouseOut="this.src='../images/yellow_arrow_down.gif';" onClick="$.moveEventsDown();" /></div>
+		<div class="sunken_box_right_wrapper">
+			<div class="sunken_box">
+				<div class="event_text" id="event_text_box"></div>
+			</div>
 		</div>
 	</div>
 	
 	<div class="subheader">
 		<div class="subheader_text_left">
+			Competitors' Information
+		</div>	
+		
+		<div class="subheader_text_right">
 			Event Log
 		</div>
 	</div>
+	
 </div>
 
 

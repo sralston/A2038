@@ -1,14 +1,49 @@
-<div class="other_player_info_line" id="other_player_info_line_<%= player.player_number %>">
-	<div class="other_player_info_line_current_player" id="current_player_<%= player.player_number %>" style="display:<%= (player == first_player || player.previous_pass) ? "block" : "none" %>;">
-		<% if (player == @game.first_player) %>
-			&gt;&gt;
+<tr class="info_row" <%= player_number == player.player_number ? "style='background-color: #8aa1c4; background-color: rgba(161,175,196,0.7s); color: black;'" : "" %>> 
+	<td style="text-align: left; padding-left: 6px;">(<%= player.player_number %>) <%= player.customer.username %></td>
+	<td style="color: #a83b46;">
+		<div id="player_status_<%= player.player_number %>">
+		<% if game.bidding_war_first_player == player %>
+			&lt;&lt;Bid War
+		<% elsif game.bidding_war_first_player.nil? && @game.first_player == player %>
+			Current
 		<% elsif player.previous_pass %>
-			P
+			Pass
+		<% else %>
+			Wait
 		<% end %>
-	</div>	
+		</div>
+	</td>
+	<td class="info_cash">*<span id="player_cash_held_<%= player.player_number %>"><%= player.cash_held %></span></td>
 	
-	<div class="other_player_info_line_text" style="background-color: rgba(<%= index.odd? ? "196,196,196" : "138,161,196" %>,0.8);<%= index==0 ? " border-top-width:2px; height: 29px;" : "" %><%= index==last ? " border-bottom-width: 2px; height: 29px;" : "" %>">
-		<%= player.player_number %>) <%= player.customer.username %>
-		<span style="float: right; color: #3e6a4b; font-weight: bold;">*<span id="player_cash_held_<%= player.player_number %>"><%= player.cash_held %></span></span>
-	</div>
-</div>
+	<td style="text-align: left; padding-left: 6px;">
+		<div id="player_open_bid_area_<%= player.player_number %>">
+		<% if player.bids.where(:active=>true).empty? %>
+			&lt;None&gt;
+		<% else %>
+			<% b = player.bids.where(:active=>true) %>
+			<% b = b.sort_by { |i| i.bid_on.number } %>
+			<% b.each do |bid| %>				
+			<div id="<%= player.player_number %>_player_open_bids_<%= bid.bid_on.number %>" class="player_open_bids_<%= bid.bid_on.number %>">
+				[<%= bid.bid_on.number %>] <%= bid.bid_on.abbreviation %> *<%= bid.bid_amount %>
+			<% end %>
+			</div>
+		<% end %>
+		</div>
+	</td>
+	
+	<td style="text-align: left; padding-left: 6px;">
+		<div id="player_bought_cos_<%= player.player_number %>">
+			<% cos = Array.new %>
+			<% cos.concat(player.private_companies).concat(player.independent_companies) %>
+
+			<% if cos.empty? %>
+				&lt;None&gt;
+			<% else %>
+				<% cos = cos.sort_by { |i| i.number } %>				
+				<% cos.each do |co| %>
+					<div>[<%= co.number %>] <%= co.abbreviation %> *<%= co.bought_for %></div>
+				<% end %>
+			<% end %>
+		</div>
+	</td>
+</tr>

@@ -1,5 +1,5 @@
 class Player < ActiveRecord::Base
-	attr_accessible #none
+	attr_accessible :previous_pass
 	
 	belongs_to :game
 	belongs_to :customer
@@ -32,6 +32,7 @@ class Player < ActiveRecord::Base
 		if !company.share.nil?
 			share = company.share
 			self.shares << share
+			self.save
 		end
 	end
 	
@@ -42,11 +43,6 @@ class Player < ActiveRecord::Base
 	
 	def gain(money)
 		self.cash_held += money
-		self.save
-	end
-	
-	def set_prev_pass(bool)
-		self.previous_pass = bool
 		self.save
 	end
 end

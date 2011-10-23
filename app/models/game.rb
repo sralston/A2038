@@ -4,6 +4,7 @@ class Game < ActiveRecord::Base
 	has_many 	:players
 	belongs_to	:first_player, :class_name=>"Player"
 	belongs_to	:current_player, :class_name=>"Player"
+	belongs_to	:bidding_war_first_player, :class_name=>"Player"
 	has_many	:customers, :through => :players
 	has_many	:corporations, :as => :corp_owner
 	has_many	:private_companies, :as => :priv_co_owner
@@ -13,11 +14,6 @@ class Game < ActiveRecord::Base
 	has_many 	:shares, :as => :stock_owner
 	#has_many	:ships, :as => :ship_owner
 	
-	def set_bidding_war_co_num(coNum)
-		self.bidding_war_co_num = coNum
-		self.save
-	end
-
 	def gain(money)
 		self.bank_amount += money
 		self.save
@@ -39,13 +35,18 @@ class Game < ActiveRecord::Base
 	end		
 
 	def new_first_player(old_player)
+		new_player = determine_next_player(old_player)
+		Event.new_first_player(new_player)
+		self.first_player = new_player
+		self.save
+	end
+	
+	def determine_next_player(old_player)
 		n = self.num_players
 		i = old_player.player_number
 		new_player_number = (i+1)==n ? i+1 : (i+1)%n
 		new_player = self.players.find_by_player_number(new_player_number)
-		Event.new_first_player(new_player)
-		self.first_player = new_player
-		self.save
+		return new_player
 	end
 
 	def end_init_bidding()

@@ -7,13 +7,13 @@
 		<div class="other_player_info_box_col">
 			<span style="text-decoration: underline">Open Bids</span><br />
 			<span id="bid_text_<%= player.player_number %>">
-				<% if player.bids.empty? %>
+				<% if player.bids.where(:active=>true).empty? %>
 					&lt;None&gt;
 				<% else %>
 					<% b = player.bids %>
-					<% b = b.sort_by { |i| i.bid_on.number } %>
+					<% b = b.sort_by { |i| i.bid_amount } %>
 					<% b.each do |bid| %>				
-						[<%= bid.bid_on.number %>] *<%= bid.bid_amount %><br />
+						[a] *<%= bid.bid_amount %><br />
 					<% end %>
 				<% end %>
 			</span>
